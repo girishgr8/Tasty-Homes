@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supervisory/myrecipe.dart';
+import 'package:supervisory/profile.dart';
 
 class MyNavDrawer extends StatefulWidget {
   MyNavDrawer({Key key, this.firebaseUser}) : super(key: key);
@@ -64,7 +65,13 @@ class _MyNavDrawerState extends State<MyNavDrawer> {
               color: Colors.blueAccent[400],
             ),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Profile(
+                      firebaseUser: widget.firebaseUser
+                    ),
+                  ));
             },
           ),
           ListTile(

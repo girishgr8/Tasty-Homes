@@ -162,7 +162,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         backgroundColor: Colors.white,
                         radius: 50.0,
                         child: Icon(
-                          Icons.shopping_cart,
+                          FontAwesomeIcons.book,
                           color: Colors.greenAccent,
                           size: 50.0,
                         ),
@@ -197,16 +197,13 @@ class _SplashScreenState extends State<SplashScreen> {
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold),
                     ),
-					Padding(
-						padding: EdgeInsets.only(left: 18.0),
-						child: Text(
-							  'For Everyone',
-							  style: TextStyle(
-							  color: Colors.white,
-							  fontSize: 18.0,
-							  fontWeight: FontWeight.bold),
-						),
-					),
+                    Text(
+                      'For Everyone',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ],
                 ),
               )
