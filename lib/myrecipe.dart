@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class EventsPage extends StatefulWidget {
+class MyRecipePage extends StatefulWidget {
   @override
-  EventsPage({Key key, this.title}) : super(key: key);
+  MyRecipePage({Key key, this.title}) : super(key: key);
 
   final String title;
-  _EventsPageState createState() => _EventsPageState();
+  _MyRecipePageState createState() => _MyRecipePageState();
 }
 
-class _EventsPageState extends State<EventsPage> {
+class _MyRecipePageState extends State<MyRecipePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

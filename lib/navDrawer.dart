@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:supervisory/events.dart';
-import 'package:supervisory/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:supervisory/myrecipe.dart';
 
 class MyNavDrawer extends StatefulWidget {
   MyNavDrawer({Key key, this.firebaseUser}) : super(key: key);
@@ -39,10 +39,9 @@ class _MyNavDrawerState extends State<MyNavDrawer> {
         children: <Widget>[
           _buildName(),
           ListTile(
-            title: Text('Events'),
-            //subtitle: Text('Upcoming Events'),
+            title: Text('My Recipes'),
             leading: Icon(
-              Icons.event_note,
+              FontAwesomeIcons.apple,
               size: 28,
               color: Colors.red[600],
             ),
@@ -50,8 +49,8 @@ class _MyNavDrawerState extends State<MyNavDrawer> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => EventsPage(
-                      title: 'Events Page',
+                    builder: (context) => MyRecipePage(
+                      title: 'My Recipes',
                     ),
                   ));
             },
@@ -80,32 +79,8 @@ class _MyNavDrawerState extends State<MyNavDrawer> {
             },
           ),
           Divider(),
-          ListTile(
-            title: Text('Login'),
-            // leading: Icon(
-            //   Icons.exit_to_app,
-            //   size: 28,
-            //   color: Colors.deepPurple,
-            // ),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Authenticate(),
-                  ));
-            },
-          ),
         ],
       ),
     );
   }
 }
-
-/*
-decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: null,
-            ),
-          )
-*/
