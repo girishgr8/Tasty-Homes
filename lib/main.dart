@@ -14,20 +14,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Recipe Book',
-        theme: ThemeData(
-            primarySwatch: Colors.deepPurple,
-            primaryColor:
-                debugDefaultTargetPlatformOverride == TargetPlatform.iOS
-                    ? Colors.grey[50]
-                    : null),
-        home: SplashScreen(),
-        initialRoute: '/',
-        routes: {
-          '/events': (context) => MyRecipePage(
-                title: 'My Recipes',
-              ),
-        });
+      title: 'Recipe Book',
+      theme: ThemeData(
+          primarySwatch: Colors.deepPurple,
+          primaryColor: debugDefaultTargetPlatformOverride == TargetPlatform.iOS
+              ? Colors.grey[50]
+              : null),
+      home: SplashScreen(),
+      initialRoute: '/',
+      routes: {
+        '/events': (context) => MyRecipePage(
+              title: 'My Recipes',
+            ),
+      },
+    );
   }
 }
 
@@ -67,9 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         elevation: defaultTargetPlatform == TargetPlatform.android ? 5.0 : 0.0,
       ),
-      drawer: MyNavDrawer(
-        firebaseUser: null,
-      ),
+      drawer: MyNavDrawer(),
       body: Container(
         child: Center(
           child: Column(
@@ -83,15 +81,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 label: Text('Sign in with Google+'),
                 elevation: 2.0,
                 onPressed: () {
-                  _signIn().then((FirebaseUser fireUser) {
-                    print('User ${fireUser.displayName} signed in');
-                    Navigator.push(
+                  _signIn().then(
+                    (FirebaseUser fireUser) {
+                      print('User ${fireUser.displayName} signed in');
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
                               DashboardPage(firebaseUser: fireUser),
-                        ));
-                  }).catchError((err) => print(err));
+                        ),
+                      );
+                    },
+                  ).catchError((err) => print(err));
                 },
               ),
               RaisedButton.icon(
@@ -103,12 +104,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 elevation: 2.0,
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MyHomePage(
-                          title: 'Recipe Book',
-                        ),
-                      ));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyHomePage(
+                        title: 'Recipe Book',
+                      ),
+                    ),
+                  );
                 },
               )
             ],
@@ -129,15 +131,18 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Timer(
-        Duration(seconds: 5),
-        () => {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MyHomePage(
-                            title: 'Recipe Book',
-                          ))),
-            });
+      Duration(seconds: 5),
+      () => {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MyHomePage(
+              title: 'Recipe Book',
+            ),
+          ),
+        ),
+      },
+    );
   }
 
   @override
@@ -173,9 +178,10 @@ class _SplashScreenState extends State<SplashScreen> {
                       Text(
                         'FlutterRecipe',
                         style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.bold),
+                          color: Colors.white,
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
@@ -193,16 +199,18 @@ class _SplashScreenState extends State<SplashScreen> {
                     Text(
                       'Online Recipe Book',
                       style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold),
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       'For Everyone',
                       style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold),
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),

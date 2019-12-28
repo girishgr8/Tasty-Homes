@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:supervisory/Recipe.dart';
 
 class RecipeCard extends StatefulWidget {
   @override

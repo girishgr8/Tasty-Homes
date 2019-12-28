@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supervisory/myrecipe.dart';
 import 'package:supervisory/profile.dart';
 
@@ -42,18 +41,19 @@ class _MyNavDrawerState extends State<MyNavDrawer> {
           ListTile(
             title: Text('My Recipes'),
             leading: Icon(
-              FontAwesomeIcons.apple,
+              Icons.restaurant_menu,
               size: 28,
               color: Colors.red[600],
             ),
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MyRecipePage(
-                      title: 'My Recipes',
-                    ),
-                  ));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyRecipePage(
+                    title: 'My Recipes',
+                  ),
+                ),
+              );
             },
           ),
           ListTile(
@@ -66,12 +66,12 @@ class _MyNavDrawerState extends State<MyNavDrawer> {
             ),
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Profile(
-                      firebaseUser: widget.firebaseUser
-                    ),
-                  ));
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      Profile(firebaseUser: widget.firebaseUser),
+                ),
+              );
             },
           ),
           ListTile(

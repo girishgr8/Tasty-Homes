@@ -14,7 +14,7 @@ class _ProfileState extends State<Profile> {
       height: size.height / 2.6,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/cover.jpeg'),
+          image: AssetImage('assets/profile-background.jpg'),
           fit: BoxFit.cover,
         ),
       ),
@@ -33,8 +33,8 @@ class _ProfileState extends State<Profile> {
           ),
           borderRadius: BorderRadius.circular(80.0),
           border: Border.all(
-            color: Colors.white,
-            width: 8.0,
+            color: Colors.deepPurple,
+            width: 5.0,
           ),
         ),
       ),
@@ -48,9 +48,16 @@ class _ProfileState extends State<Profile> {
       fontSize: 28.0,
       fontWeight: FontWeight.w700,
     );
-    return Text(
-      widget.firebaseUser.displayName,
-      style: _nameTextStyle,
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: BorderRadius.circular(4.0),
+      ),
+      child: Text(
+        widget.firebaseUser.displayName,
+        style: _nameTextStyle,
+      ),
     );
   }
 
@@ -62,7 +69,7 @@ class _ProfileState extends State<Profile> {
         borderRadius: BorderRadius.circular(4.0),
       ),
       child: Text(
-        'Abc',
+        '',
         style: TextStyle(
           fontFamily: 'Roboto',
           color: Colors.black,
@@ -119,10 +126,112 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  Widget _buildBio(BuildContext context) {
+    TextStyle _bioTextStyle = TextStyle(
+      fontFamily: 'Spectral',
+      fontWeight: FontWeight.w500,
+      fontStyle: FontStyle.italic,
+      color: Color(0xFF799497),
+      fontSize: 16.0,
+    );
+
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+      child: Text(
+        '',
+        textAlign: TextAlign.center,
+        style: _bioTextStyle,
+      ),
+    );
+  }
+
+  Widget _buildSeparator(Size size) {
+    return Container(
+      width: size.width / 1.6,
+      height: 2.0,
+      color: Colors.black54,
+      margin: EdgeInsets.only(top: 2.0),
+    );
+  }
+
+  Widget _buildGetInTouch(BuildContext context) {
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      padding: EdgeInsets.only(top: 8.0),
+      child: Text(
+        'Get in Touch with ${widget.firebaseUser.displayName.split(' ')[0]}',
+        style: TextStyle(
+          fontFamily: 'Roboto',
+          fontSize: 16.0,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildButtons() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 36.0, vertical: 12.0),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: InkWell(
+              onTap: () => print('Followed'),
+              child: Container(
+                height: 40.0,
+                decoration: BoxDecoration(
+                  border: Border.all(),
+                  color: Colors.deepPurple,
+                ),
+                child: Center(
+                  child: Text(
+                    'FOLLOW',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 18.0,
+          ),
+          Expanded(
+            child: InkWell(
+              onTap: () => print('Unfollowed'),
+              child: Container(
+                height: 40.0,
+                decoration: BoxDecoration(
+                  border: Border.all(),
+                  color: Colors.red,
+                ),
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Text(
+                      'UNFOLLOW',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Profile'),
+      ),
       body: Stack(
         children: <Widget>[
           _buildCoverImage(size),
@@ -131,12 +240,25 @@ class _ProfileState extends State<Profile> {
               child: Column(
                 children: <Widget>[
                   SizedBox(
-                    height: size.height / 6.4,
+                    height: size.height / 3.6,
                   ),
                   _buildProfileImage(),
                   _buildFullName(),
+                  SizedBox(
+                    height: 5.0,
+                  ),
                   _buildStatus(context),
                   _buildStatContainer(),
+                  _buildBio(context),
+                  _buildSeparator(size),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  _buildGetInTouch(context),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  _buildButtons(),
                 ],
               ),
             ),
