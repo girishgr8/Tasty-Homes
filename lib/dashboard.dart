@@ -110,32 +110,42 @@ class _DashboardPageState extends State<DashboardPage> {
                 barrierDismissible: true,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('LOGOUT ?'),
-                    content: Text('Confirm logout ?'),
+                    titleTextStyle: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.deepPurple,
+                    ),
+                    title: Text('Log out of Recipe Book'),
                     elevation: 30.0,
                     actions: <Widget>[
-                      FlatButton(
-                        child: Text('YES'),
-                        onPressed: () {
-                          _googleSignIn.signOut();
-                          print('Signed out');
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MyHomePage(
-                                title: 'Recipe Book',
-                              ),
-                            ),
-                          );
-                        },
+                      Divider(),
+                      Row(
+                        children: <Widget>[
+                          FlatButton(
+                            child: Text('Log out'),
+                            onPressed: () {
+                              _googleSignIn.signOut();
+                              print('Signed out');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MyHomePage(),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
-                      FlatButton(
-                        child: Text('NO'),
-                        onPressed: () {
-                          print("Didn't logout");
-                          Navigator.pop(context);
-                        },
-                      )
+                      Divider(),
+                      Row(
+                        children: <Widget>[
+                          FlatButton(
+                            child: Text('Cancel'),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      ),
                     ],
                   );
                 },

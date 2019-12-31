@@ -24,19 +24,13 @@ class MyApp extends StatelessWidget {
       home: SplashScreen(),
       initialRoute: '/',
       routes: {
-        '/events': (context) => MyRecipePage(
-              title: 'My Recipes',
-            ),
+        '/events': (context) => MyRecipePage(),
       },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -63,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('Recipe Book'),
         centerTitle: true,
         elevation: defaultTargetPlatform == TargetPlatform.android ? 5.0 : 0.0,
       ),
@@ -106,9 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MyHomePage(
-                        title: 'Recipe Book',
-                      ),
+                      builder: (context) => MyHomePage(),
                     ),
                   );
                 },
@@ -136,9 +128,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => MyHomePage(
-              title: 'Recipe Book',
-            ),
+            builder: (context) => MyHomePage(),
           ),
         ),
       },

@@ -49,9 +49,7 @@ class _MyNavDrawerState extends State<MyNavDrawer> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MyRecipePage(
-                    title: 'My Recipes',
-                  ),
+                  builder: (context) => MyRecipePage(),
                 ),
               );
             },
