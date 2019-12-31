@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:supervisory/dashboard.dart';
 
@@ -14,6 +15,13 @@ class AddReceipe extends StatefulWidget {
 }
 
 class _AddReceipeState extends State<AddReceipe> {
+  final recipeName = TextEditingController();
+  final prepTime = TextEditingController();
+  final readTime = TextEditingController();
+  final procedure = TextEditingController();
+
+  final DocumentReference _documentReference =
+      Firestore.instance.collection("recipes").document("dummy");
   final _formKey = GlobalKey<FormState>();
   File _image;
   Future pickImageFromGallery(ImageSource source) async {
@@ -22,6 +30,25 @@ class _AddReceipeState extends State<AddReceipe> {
       _image = image;
     });
   }
+
+  void _addRecipe() {
+    _documentReference.setData({
+      "chef": widget.firebaseUser.displayName,
+      "recipeName": recipeName.text,
+      "prepTime": prepTime.text,
+      "readTime": readTime.text,
+      "procedure": procedure.text,
+      "likes": 0,
+    }).whenComplete(() {
+      print("New Recipe added");
+    }).catchError((err) {
+      print(err);
+    });
+  }
+
+  void _deleteRecipe() {}
+  void _updateRecipe() {}
+  void _fetchRecipe() {}
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +68,7 @@ class _AddReceipeState extends State<AddReceipe> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     TextFormField(
+                      controller: recipeName,
                       decoration: const InputDecoration(
                         hasFloatingPlaceholder: true,
                         labelText: 'Dish Name',
@@ -61,6 +89,7 @@ class _AddReceipeState extends State<AddReceipe> {
                       padding: EdgeInsets.symmetric(vertical: 10.0),
                     ),
                     TextFormField(
+                      controller: prepTime,
                       keyboardType:
                           TextInputType.numberWithOptions(decimal: false),
                       decoration: const InputDecoration(
@@ -84,6 +113,7 @@ class _AddReceipeState extends State<AddReceipe> {
                       padding: EdgeInsets.symmetric(vertical: 10.0),
                     ),
                     TextFormField(
+                      controller: readTime,
                       keyboardType:
                           TextInputType.numberWithOptions(decimal: false),
                       decoration: const InputDecoration(
@@ -107,6 +137,7 @@ class _AddReceipeState extends State<AddReceipe> {
                       padding: EdgeInsets.symmetric(vertical: 10.0),
                     ),
                     TextFormField(
+                      controller: procedure,
                       minLines: 5,
                       maxLines: 500,
                       toolbarOptions: ToolbarOptions(
@@ -197,6 +228,7 @@ class _AddReceipeState extends State<AddReceipe> {
                                     if (_formKey.currentState.validate()) {
                                       // Process data.
                                       print('Now add to Cloud Store');
+                                      _addRecipe();
                                     }
                                   },
                                 ),

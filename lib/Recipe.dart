@@ -1,4 +1,10 @@
 class Recipe {
-  String recipeName, chef, ingredients, procedure;
-  Recipe({this.recipeName, this.chef});
+  String chef, recipeName, procedure;
+  int prepTime, readTime;
+  Recipe(
+      {this.chef,
+      this.recipeName,
+      this.prepTime,
+      this.readTime,
+      this.procedure});
 }

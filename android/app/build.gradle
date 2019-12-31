@@ -41,6 +41,7 @@ android {
         applicationId "com.supervisory.manager"
         minSdkVersion 16
         targetSdkVersion 28
+		multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -66,6 +67,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.google.firebase:firebase-analytics:17.2.0'
     implementation'com.google.firebase:firebase-messaging:19.0.0'
+	
 }
 
 apply plugin: 'com.google.gms.google-services'
