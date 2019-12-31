@@ -14,7 +14,7 @@ class _ProfileState extends State<Profile> {
       height: size.height / 2.6,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/profile-background.jpg'),
+          image: AssetImage('assets/images/profile-background.jpg'),
           fit: BoxFit.cover,
         ),
       ),
