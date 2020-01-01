@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supervisory/navDrawer.dart';
 import 'package:supervisory/Dashboard.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Recipe Book',
+      title: 'Tasty Homes',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primarySwatch: Colors.deepPurple,
@@ -33,6 +34,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+
   Future<FirebaseUser> _signIn() async {
     GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -44,6 +46,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final AuthResult authResult = await _auth.signInWithCredential(credential);
     FirebaseUser user = authResult.user;
+    if (authResult.additionalUserInfo.isNewUser) {
+      Firestore.instance.collection("users").document().setData({
+        "name": user.displayName,
+        "email": user.email,
+        "followers": 0,
+        "following": 0,
+        "recipes": 0,
+        "bio": "",
+        "speciality": "",
+        "joinDate": DateTime.now(),
+      }).whenComplete(() {
+        print('New User ${user.displayName} added....!');
+      });
+    }
+
     print("Signed in, Username is: " + user.displayName);
     return user;
   }
@@ -52,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Recipe Book'),
+        title: Text('Tasty Homes'),
         centerTitle: true,
         elevation: defaultTargetPlatform == TargetPlatform.android ? 5.0 : 0.0,
       ),
@@ -119,13 +136,13 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Timer(
       Duration(seconds: 5),
-      () => {
+      () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => MyHomePage(),
           ),
-        ),
+        );
       },
     );
   }
@@ -161,7 +178,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         padding: EdgeInsets.only(top: 10.0),
                       ),
                       Text(
-                        'FlutterRecipe',
+                        'Tasty Homes',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 24.0,

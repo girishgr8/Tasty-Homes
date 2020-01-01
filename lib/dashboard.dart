@@ -153,7 +153,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   Padding(
                     padding: EdgeInsets.all(5.0),
                     child: Text(
-                      'Log out of Flutter Recipe',
+                      'Log out of Tasty Homes',
                       style: TextStyle(
                         fontFamily: 'Roboto',
                         fontSize: 18.0,
@@ -205,7 +205,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Recipe Book'),
+        title: Text('Tasty Homes'),
         centerTitle: true,
         actions: <Widget>[
           IconButton(

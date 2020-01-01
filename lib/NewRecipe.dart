@@ -36,7 +36,7 @@ class _NewRecipeState extends State<NewRecipe> {
       readTime: readTime.text,
       procedure: procedure.text,
       likes: 0,
-      pub_date: DateTime.now(),
+      pubDate: DateTime.now(),
     ).addNewRecipe().whenComplete(() {
       showDialog(
         context: context,
@@ -45,7 +45,7 @@ class _NewRecipeState extends State<NewRecipe> {
           return AlertDialog(
             titleTextStyle: TextStyle(
               fontSize: 18.0,
-              color: Colors.lightGreenAccent[400],
+              color: Colors.deepPurple,
             ),
             title: Text('Successful !'),
             elevation: 30.0,

@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class RecipeService {
   String chef, recipeName, procedure, prepTime, readTime;
   int likes;
-  DateTime pub_date;
+  var pubDate;
   RecipeService({
     this.chef,
     this.recipeName,
@@ -11,14 +11,14 @@ class RecipeService {
     this.readTime,
     this.procedure,
     this.likes,
-    this.pub_date,
+    this.pubDate,
   });
 
   getUserRecipes(String chef) {
     return Firestore.instance
         .collection('recipes')
         .where('chef', isEqualTo: chef)
-        .orderBy('pub_date', descending: true)
+        .orderBy('pubDate', descending: true)
         .getDocuments();
   }
 
@@ -30,7 +30,7 @@ class RecipeService {
       "readTime": readTime,
       "procedure": procedure,
       "likes": likes,
-      "pub_date": pub_date,
+      "pubDate": pubDate,
     });
   }
 }

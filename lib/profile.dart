@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:supervisory/services/RecipeService.dart';
 
 class Profile extends StatefulWidget {
   Profile({Key key, this.firebaseUser}) : super(key: key);
@@ -9,9 +11,40 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String count;
+  bool recipeFlag = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Firestore.instance
+        .collection('users')
+        .where('email', isEqualTo: widget.firebaseUser.email)
+        .getDocuments()
+        .then((QuerySnapshot queryDocs) {
+      if (queryDocs.documents.isNotEmpty) {
+        count = queryDocs.documents[0].data['recipes'].toString();
+        setState(() {
+          recipeFlag = true;
+        });
+      }
+    });
+
+    RecipeService()
+        .getUserRecipes(widget.firebaseUser.displayName)
+        .then((QuerySnapshot queryDocs) {
+      if (queryDocs.documents.isNotEmpty) {
+        count = queryDocs.documents.length.toString();
+        setState(() {
+          recipeFlag = true;
+        });
+      }
+    });
+  }
+
   Widget _buildCoverImage(Size size) {
     return Container(
-      height: size.height / 2.6,
+      height: size.height / 4.5,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/images/profile-background.jpg'),
@@ -84,12 +117,12 @@ class _ProfileState extends State<Profile> {
     TextStyle _statLabelTextStyle = TextStyle(
       fontFamily: 'Roboto',
       color: Colors.black,
-      fontSize: 16.0,
+      fontSize: 15.0,
       fontWeight: FontWeight.w200,
     );
     TextStyle _statCountTextStyle = TextStyle(
       color: Colors.black54,
-      fontSize: 24.0,
+      fontSize: 20.0,
       fontWeight: FontWeight.bold,
     );
 
@@ -103,7 +136,7 @@ class _ProfileState extends State<Profile> {
         Text(
           label,
           style: _statLabelTextStyle,
-        )
+        ),
       ],
     );
   }
@@ -120,7 +153,9 @@ class _ProfileState extends State<Profile> {
         children: <Widget>[
           _buildStatItem('Followers', '400'),
           _buildStatItem('Following', '200'),
-          _buildStatItem('Recipes', '10'),
+          recipeFlag == true
+              ? _buildStatItem('Recipes', count)
+              : CircularProgressIndicator(),
         ],
       ),
     );
@@ -240,14 +275,14 @@ class _ProfileState extends State<Profile> {
               child: Column(
                 children: <Widget>[
                   SizedBox(
-                    height: size.height / 3.6,
+                    height: size.height / 8.0,
                   ),
                   _buildProfileImage(),
                   _buildFullName(),
                   SizedBox(
                     height: 5.0,
                   ),
-                  _buildStatus(context),
+                  // _buildStatus(context),
                   _buildStatContainer(),
                   _buildBio(context),
                   _buildSeparator(size),

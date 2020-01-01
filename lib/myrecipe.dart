@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:supervisory/ViewRecipe.dart';
 import 'package:supervisory/services/RecipeService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -12,8 +14,7 @@ class MyRecipePage extends StatefulWidget {
 
 class _MyRecipePageState extends State<MyRecipePage> {
   bool recipeFlag = false;
-  var recipes;
-
+  List<RecipeService> recipes = [];
   @override
   void initState() {
     super.initState();
@@ -23,15 +24,22 @@ class _MyRecipePageState extends State<MyRecipePage> {
       if (queryDocs.documents.isNotEmpty) {
         setState(() {
           recipeFlag = true;
-          recipes = queryDocs.documents[1].data;
         });
-      } else {
-        setState(() {});
+
+        for (var r in queryDocs.documents) {
+          recipes.add(RecipeService(
+            chef: r.data['chef'],
+            recipeName: r.data['recipeName'],
+            prepTime: r.data['prepTime'],
+            readTime: r.data['readTime'],
+            procedure: r.data['procedure'],
+            likes: r.data['likes'],
+            pubDate: r.data['pubDate'],
+          ));
+        }
       }
     });
   }
-
-  Widget _buildCard() {}
 
   @override
   Widget build(BuildContext context) {
@@ -41,39 +49,55 @@ class _MyRecipePageState extends State<MyRecipePage> {
         centerTitle: true,
       ),
       body: Container(
-        child: recipeFlag
-            ? Card(
-                child: Center(
+        child: recipeFlag == true
+            ? ListView.builder(
+                itemCount: recipes.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ViewRecipe(
+                                      recipe: recipes[index],
+                                    )));
+                      },
+                      leading: Image(
+                        image:
+                            AssetImage('assets/images/profile-background.jpg'),
+                      ),
+                      title: Text(recipes[index].recipeName),
+                      subtitle: Row(
+                        children: <Widget>[
+                          Icon(
+                            FontAwesomeIcons.solidCircle,
+                            size: 6.0,
+                            color: Colors.grey[400],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 3.0),
+                          ),
+                          Text(
+                            '${recipes[index].readTime} mins read',
+                            style: TextStyle(fontSize: 12.0),
+                          ),
+                        ],
+                      ));
+                },
+              )
+            : Center(
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 50.0),
                   child: Column(
                     children: <Widget>[
-                      Text(recipes['chef']),
-                      Text(recipes['recipeName']),
-                      Text('Preparation Time: ${recipes['prepTime']}'),
-                      Text('Read Time: ${recipes['readTime']}'),
-                      Text('Likes: ${recipes['likes'].toString()}'),
+                      CircularProgressIndicator(),
+                      Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
+                      Text('Loading.....'),
                     ],
                   ),
                 ),
-              )
-            : Card(
-                child: Text("No Recipe Available..."),
               ),
       ),
-      // : Container(
-      //     child: Column(
-      //       children: <Widget>[
-      //         Center(
-      //           child: Text('You are not logged in. Please login first !'),
-      //         ),
-      //         RaisedButton(
-      //           onPressed: () {
-      //             Navigator.pop(context);
-      //           },
-      //           child: Text('Back'),
-      //         )
-      //       ],
-      //     ),
-      //   ),
     );
   }
 }
