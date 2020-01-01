@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:supervisory/myrecipe.dart';
+import 'package:supervisory/MyRecipe.dart';
 import 'package:supervisory/profile.dart';
 
 class MyNavDrawer extends StatefulWidget {
@@ -49,7 +49,9 @@ class _MyNavDrawerState extends State<MyNavDrawer> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MyRecipePage(),
+                  builder: (context) => MyRecipePage(
+                    firebaseUser: widget.firebaseUser,
+                  ),
                 ),
               );
             },

@@ -1,27 +1,24 @@
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:supervisory/Dashboard.dart';
+import 'package:supervisory/services/RecipeService.dart';
 
-import 'package:supervisory/dashboard.dart';
-
-class AddReceipe extends StatefulWidget {
-  AddReceipe({Key key, this.firebaseUser}) : super(key: key);
+class NewRecipe extends StatefulWidget {
+  NewRecipe({Key key, this.firebaseUser}) : super(key: key);
   final FirebaseUser firebaseUser;
   @override
-  _AddReceipeState createState() => _AddReceipeState();
+  _NewRecipeState createState() => _NewRecipeState();
 }
 
-class _AddReceipeState extends State<AddReceipe> {
+class _NewRecipeState extends State<NewRecipe> {
   final recipeName = TextEditingController();
   final prepTime = TextEditingController();
   final readTime = TextEditingController();
   final procedure = TextEditingController();
 
-  final DocumentReference _documentReference =
-      Firestore.instance.collection("recipes").document("dummy");
   final _formKey = GlobalKey<FormState>();
   File _image;
   Future pickImageFromGallery(ImageSource source) async {
@@ -31,16 +28,44 @@ class _AddReceipeState extends State<AddReceipe> {
     });
   }
 
-  void _addRecipe() {
-    _documentReference.setData({
-      "chef": widget.firebaseUser.displayName,
-      "recipeName": recipeName.text,
-      "prepTime": prepTime.text,
-      "readTime": readTime.text,
-      "procedure": procedure.text,
-      "likes": 0,
-    }).whenComplete(() {
-      print("New Recipe added");
+  void _addRecipe(BuildContext context) {
+    RecipeService(
+      chef: widget.firebaseUser.displayName,
+      recipeName: recipeName.text,
+      prepTime: prepTime.text,
+      readTime: readTime.text,
+      procedure: procedure.text,
+      likes: 0,
+      pub_date: DateTime.now(),
+    ).addNewRecipe().whenComplete(() {
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            titleTextStyle: TextStyle(
+              fontSize: 18.0,
+              color: Colors.lightGreenAccent[400],
+            ),
+            title: Text('Successful !'),
+            elevation: 30.0,
+            actions: <Widget>[
+              FlatButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          DashboardPage(firebaseUser: widget.firebaseUser),
+                    ),
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      );
     }).catchError((err) {
       print(err);
     });
@@ -191,11 +216,10 @@ class _AddReceipeState extends State<AddReceipe> {
                               width: 20.0,
                             ),
                             Expanded(
-                              child: FlatButton.icon(
+                              child: IconButton(
                                   icon: Icon(
                                     FontAwesomeIcons.camera,
                                   ),
-                                  label: Text(''),
                                   onPressed: () {
                                     pickImageFromGallery(ImageSource.camera);
                                   }),
@@ -213,7 +237,6 @@ class _AddReceipeState extends State<AddReceipe> {
                             children: <Widget>[
                               Expanded(
                                 child: RaisedButton(
-                                  // icon: Icon(FontAwesomeIcons.arrowRight),
                                   child: Text(
                                     'Done',
                                     style: TextStyle(
@@ -227,8 +250,7 @@ class _AddReceipeState extends State<AddReceipe> {
                                     // the form is invalid.
                                     if (_formKey.currentState.validate()) {
                                       // Process data.
-                                      print('Now add to Cloud Store');
-                                      _addRecipe();
+                                      _addRecipe(context);
                                     }
                                   },
                                 ),
@@ -238,7 +260,6 @@ class _AddReceipeState extends State<AddReceipe> {
                               ),
                               Expanded(
                                 child: RaisedButton(
-                                  // icon: Icon(FontAwesomeIcons.arrowLeft),
                                   child: Text(
                                     'Cancel',
                                     style: TextStyle(
@@ -248,12 +269,41 @@ class _AddReceipeState extends State<AddReceipe> {
                                   color: Colors.red,
                                   padding: EdgeInsets.symmetric(vertical: 12.0),
                                   onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DashboardPage(
-                                            firebaseUser: widget.firebaseUser),
-                                      ),
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: true,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          titleTextStyle: TextStyle(
+                                            fontSize: 16.0,
+                                            color: Colors.deepPurple,
+                                          ),
+                                          title: Text('Cancel New Recipe ?'),
+                                          elevation: 30.0,
+                                          actions: <Widget>[
+                                            FlatButton(
+                                              child: Text('YES'),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DashboardPage(
+                                                            firebaseUser: widget
+                                                                .firebaseUser),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                            FlatButton(
+                                              child: Text('NO'),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
                                     );
                                   },
                                 ),
