@@ -18,6 +18,7 @@ class _NewRecipeState extends State<NewRecipe> {
   final prepTime = TextEditingController();
   final readTime = TextEditingController();
   final procedure = TextEditingController();
+  final ingredients = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
   File _image;
@@ -35,6 +36,7 @@ class _NewRecipeState extends State<NewRecipe> {
       prepTime: prepTime.text,
       readTime: readTime.text,
       procedure: procedure.text,
+      ingredients: ingredients.text,
       likes: 0,
       pubDate: DateTime.now(),
     ).addNewRecipe().whenComplete(() {
@@ -70,10 +72,6 @@ class _NewRecipeState extends State<NewRecipe> {
       print(err);
     });
   }
-
-  void _deleteRecipe() {}
-  void _updateRecipe() {}
-  void _fetchRecipe() {}
 
   @override
   Widget build(BuildContext context) {
@@ -138,14 +136,14 @@ class _NewRecipeState extends State<NewRecipe> {
                       padding: EdgeInsets.symmetric(vertical: 10.0),
                     ),
                     TextFormField(
-                      controller: readTime,
+                      controller: ingredients,
+                      minLines: 3,
+                      maxLines: 10,
                       keyboardType:
                           TextInputType.numberWithOptions(decimal: false),
                       decoration: const InputDecoration(
                         hasFloatingPlaceholder: true,
-                        labelText: 'Read Time',
-                        prefixIcon: Icon(FontAwesomeIcons.solidClock),
-                        suffixText: 'minutes',
+                        labelText: 'Ingredients',
                         labelStyle: TextStyle(fontSize: 16.0),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(4.0)),
@@ -153,7 +151,7 @@ class _NewRecipeState extends State<NewRecipe> {
                       ),
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'Please enter read time for procedure';
+                          return 'Please enter ingredients needed';
                         }
                         return null;
                       },
@@ -182,6 +180,30 @@ class _NewRecipeState extends State<NewRecipe> {
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'Please enter procedure for dish';
+                        }
+                        return null;
+                      },
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                    ),
+                    TextFormField(
+                      controller: readTime,
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: false),
+                      decoration: const InputDecoration(
+                        hasFloatingPlaceholder: true,
+                        labelText: 'Read Time',
+                        prefixIcon: Icon(FontAwesomeIcons.solidClock),
+                        suffixText: 'minutes',
+                        labelStyle: TextStyle(fontSize: 16.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter read time for procedure';
                         }
                         return null;
                       },
@@ -284,15 +306,16 @@ class _NewRecipeState extends State<NewRecipe> {
                                             FlatButton(
                                               child: Text('YES'),
                                               onPressed: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        DashboardPage(
-                                                            firebaseUser: widget
-                                                                .firebaseUser),
-                                                  ),
-                                                );
+                                                Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          DashboardPage(
+                                                              firebaseUser: widget
+                                                                  .firebaseUser),
+                                                    ),
+                                                    (Route<dynamic> route) =>
+                                                        false);
                                               },
                                             ),
                                             FlatButton(

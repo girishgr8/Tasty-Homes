@@ -33,6 +33,7 @@ class _MyRecipePageState extends State<MyRecipePage> {
             prepTime: r.data['prepTime'],
             readTime: r.data['readTime'],
             procedure: r.data['procedure'],
+            ingredients: r.data['ingredients'],
             likes: r.data['likes'],
             pubDate: r.data['pubDate'],
           ));
@@ -65,6 +66,17 @@ class _MyRecipePageState extends State<MyRecipePage> {
                       leading: Image(
                         image:
                             AssetImage('assets/images/profile-background.jpg'),
+                      ),
+                      trailing: InkWell(
+                        child: Icon(Icons.navigate_next, size: 30.0),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ViewRecipe(
+                                        recipe: recipes[index],
+                                      )));
+                        },
                       ),
                       title: Text(recipes[index].recipeName),
                       subtitle: Row(

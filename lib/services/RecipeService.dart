@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RecipeService {
-  String chef, recipeName, procedure, prepTime, readTime;
+  String chef, recipeName, procedure, prepTime, readTime, ingredients;
   int likes;
   var pubDate;
   RecipeService({
@@ -9,6 +9,7 @@ class RecipeService {
     this.recipeName,
     this.prepTime,
     this.readTime,
+    this.ingredients,
     this.procedure,
     this.likes,
     this.pubDate,
@@ -30,6 +31,7 @@ class RecipeService {
       "readTime": readTime,
       "procedure": procedure,
       "likes": likes,
+      "ingredients": ingredients,
       "pubDate": pubDate,
     });
   }

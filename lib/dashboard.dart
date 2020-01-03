@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supervisory/NewRecipe.dart';
 import 'package:supervisory/main.dart';
 import 'package:supervisory/navDrawer.dart';
@@ -14,8 +13,6 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
-
   Widget _buildCard() {
     return Card(
       child: Column(
@@ -176,12 +173,11 @@ class _DashboardPageState extends State<DashboardPage> {
                     onPressed: () {
                       print(
                           'User \'${widget.firebaseUser.displayName}\' logged out');
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MyHomePage(),
-                        ),
-                      );
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) => MyHomePage(),
+                          ),
+                          (Route<dynamic> route) => false);
                     },
                   ),
                   Divider(),

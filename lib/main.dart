@@ -52,10 +52,12 @@ class _MyHomePageState extends State<MyHomePage> {
         "email": user.email,
         "followers": 0,
         "following": 0,
-        "recipes": 0,
         "bio": "",
         "speciality": "",
         "joinDate": DateTime.now(),
+        "youtube": "Not provided",
+        "facebook": "Not provided",
+        "instagram": "Not provided",
       }).whenComplete(() {
         print('New User ${user.displayName} added....!');
       });
@@ -73,7 +75,6 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         elevation: defaultTargetPlatform == TargetPlatform.android ? 5.0 : 0.0,
       ),
-      drawer: MyNavDrawer(),
       body: Container(
         child: Center(
           child: Column(
@@ -137,12 +138,11 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(
       Duration(seconds: 5),
       () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MyHomePage(),
-          ),
-        );
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => MyHomePage(),
+            ),
+            (Route<dynamic> route) => false);
       },
     );
   }
@@ -170,7 +170,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         radius: 50.0,
                         child: Icon(
                           FontAwesomeIcons.book,
-                          color: Colors.greenAccent,
+                          color: Colors.redAccent,
                           size: 50.0,
                         ),
                       ),

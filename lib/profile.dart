@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supervisory/services/RecipeService.dart';
+import 'package:supervisory/User.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Profile extends StatefulWidget {
   Profile({Key key, this.firebaseUser}) : super(key: key);
@@ -13,6 +17,8 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   String count;
   bool recipeFlag = false;
+  bool userFlag = false;
+  User user;
 
   @override
   void initState() {
@@ -23,9 +29,21 @@ class _ProfileState extends State<Profile> {
         .getDocuments()
         .then((QuerySnapshot queryDocs) {
       if (queryDocs.documents.isNotEmpty) {
-        count = queryDocs.documents[0].data['recipes'].toString();
+        var data = queryDocs.documents[0].data;
+        user = User(
+          name: data['name'],
+          email: data['email'],
+          followers: data['followers'],
+          following: data['following'],
+          bio: data['bio'],
+          joinedDate: data['joinedDate'],
+          speciality: data['speciality'],
+          youtube: data['youtube'],
+          facebook: data['facebook'],
+          instagram: data['instagram'],
+        );
         setState(() {
-          recipeFlag = true;
+          userFlag = true;
         });
       }
     });
@@ -94,7 +112,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildStatus(BuildContext context) {
+  Widget _buildStatus(BuildContext context, String speciality) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
       decoration: BoxDecoration(
@@ -102,7 +120,7 @@ class _ProfileState extends State<Profile> {
         borderRadius: BorderRadius.circular(4.0),
       ),
       child: Text(
-        '',
+        speciality,
         style: TextStyle(
           fontFamily: 'Roboto',
           color: Colors.black,
@@ -151,8 +169,12 @@ class _ProfileState extends State<Profile> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          _buildStatItem('Followers', '400'),
-          _buildStatItem('Following', '200'),
+          userFlag == true
+              ? _buildStatItem('Followers', user.followers.toString())
+              : CircularProgressIndicator(),
+          userFlag == true
+              ? _buildStatItem('Following', user.following.toString())
+              : CircularProgressIndicator(),
           recipeFlag == true
               ? _buildStatItem('Recipes', count)
               : CircularProgressIndicator(),
@@ -161,7 +183,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildBio(BuildContext context) {
+  Widget _buildBio(BuildContext context, String bio) {
     TextStyle _bioTextStyle = TextStyle(
       fontFamily: 'Spectral',
       fontWeight: FontWeight.w500,
@@ -174,7 +196,7 @@ class _ProfileState extends State<Profile> {
       color: Theme.of(context).scaffoldBackgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
       child: Text(
-        '',
+        bio,
         textAlign: TextAlign.center,
         style: _bioTextStyle,
       ),
@@ -267,39 +289,126 @@ class _ProfileState extends State<Profile> {
       appBar: AppBar(
         title: Text('Profile'),
       ),
-      body: Stack(
-        children: <Widget>[
-          _buildCoverImage(size),
-          SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: size.height / 8.0,
+      body: userFlag && recipeFlag
+          ? Stack(
+              children: <Widget>[
+                _buildCoverImage(size),
+                SafeArea(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(
+                          height: size.height / 8.0,
+                        ),
+                        _buildProfileImage(),
+                        _buildFullName(),
+                        user.speciality == ''
+                            ? _buildStatus(context, 'No speciality provided.')
+                            : _buildStatus(context, user.speciality),
+                        _buildStatContainer(),
+                        SizedBox(height: 5),
+                        user.bio == ''
+                            ? _buildBio(context, 'No bio provided.')
+                            : _buildBio(context, user.bio),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(padding: EdgeInsets.only(left: 50.0)),
+                            Icon(FontAwesomeIcons.youtube),
+                            Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5.0)),
+                            user.youtube == 'Not provided'
+                                ? Text(user.youtube)
+                                : RichText(
+                                    text: TextSpan(
+                                      text: user.youtube,
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontFamily: 'Roboto'),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          launch(user.youtube);
+                                        },
+                                    ),
+                                  ),
+                          ],
+                        ),
+                        Padding(padding: EdgeInsets.symmetric(vertical: 2.0)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(padding: EdgeInsets.only(left: 50.0)),
+                            Icon(FontAwesomeIcons.facebookSquare),
+                            Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5.0)),
+                            RichText(
+                              text: TextSpan(
+                                text: user.facebook,
+                                style: TextStyle(
+                                    color: Colors.black, fontFamily: 'Roboto'),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    launch(user.facebook);
+                                  },
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(padding: EdgeInsets.symmetric(vertical: 2.0)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(padding: EdgeInsets.only(left: 50.0)),
+                            Icon(FontAwesomeIcons.instagram),
+                            Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5.0)),
+                            RichText(
+                              text: TextSpan(
+                                text: user.instagram,
+                                style: TextStyle(
+                                    color: Colors.black, fontFamily: 'Roboto'),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    launch(user.instagram);
+                                  },
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        // _buildSeparator(size),
+                        // SizedBox(
+                        //   height: 10.0,
+                        // ),
+                        // _buildGetInTouch(context),
+                        // SizedBox(
+                        //   height: 8.0,
+                        // ),
+                        // _buildButtons(),
+                      ],
+                    ),
                   ),
-                  _buildProfileImage(),
-                  _buildFullName(),
-                  SizedBox(
-                    height: 5.0,
+                )
+              ],
+            )
+          : Container(
+              child: Center(
+                child: Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 75.0),
+                  child: Column(
+                    children: <Widget>[
+                      CircularProgressIndicator(),
+                      Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
+                      Text(
+                        'Loading Your Profile....',
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                    ],
                   ),
-                  // _buildStatus(context),
-                  _buildStatContainer(),
-                  _buildBio(context),
-                  _buildSeparator(size),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  _buildGetInTouch(context),
-                  SizedBox(
-                    height: 8.0,
-                  ),
-                  _buildButtons(),
-                ],
+                ),
               ),
             ),
-          )
-        ],
-      ),
     );
   }
 }

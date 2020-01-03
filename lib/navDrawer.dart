@@ -11,33 +11,18 @@ class MyNavDrawer extends StatefulWidget {
 }
 
 class _MyNavDrawerState extends State<MyNavDrawer> {
-  Widget _buildName() {
-    if (widget.firebaseUser != null) {
-      return UserAccountsDrawerHeader(
-        accountName: Text(widget.firebaseUser.displayName),
-        accountEmail: Text(widget.firebaseUser.email),
-        currentAccountPicture: CircleAvatar(
-          backgroundImage: NetworkImage(widget.firebaseUser.photoUrl),
-        ),
-      );
-    } else {
-      return UserAccountsDrawerHeader(
-        accountName: Text(''),
-        accountEmail: Text(''),
-        currentAccountPicture: CircleAvatar(
-          radius: 30,
-          backgroundColor: Colors.deepPurple,
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
         children: <Widget>[
-          _buildName(),
+          UserAccountsDrawerHeader(
+            accountName: Text(widget.firebaseUser.displayName),
+            accountEmail: Text(widget.firebaseUser.email),
+            currentAccountPicture: CircleAvatar(
+              backgroundImage: NetworkImage(widget.firebaseUser.photoUrl),
+            ),
+          ),
           ListTile(
             title: Text('My Recipes'),
             leading: Icon(
