@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supervisory/NewRecipe.dart';
-import 'package:supervisory/main.dart';
-import 'package:supervisory/navDrawer.dart';
+import 'package:supervisory/ViewRecipe.dart';
+import 'package:supervisory/Recipe.dart';
+import 'package:supervisory/drawer.dart';
+import 'package:supervisory/services/RecipeService.dart';
 
 class DashboardPage extends StatefulWidget {
   DashboardPage({Key key, this.firebaseUser}) : super(key: key);
@@ -13,188 +16,90 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  Widget _buildCard() {
-    return Card(
-      child: Column(
-        children: <Widget>[
-          ListTile(
-            title: Text(
-              'Girish T',
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            leading: Icon(
-              Icons.restaurant_menu,
-              color: Colors.deepPurple,
-              size: 25.0,
-            ),
-            subtitle: Text('Chef'),
-          ),
-          Divider(
-            color: Colors.deepPurple,
-            indent: 20.0,
-            endIndent: 20.0,
-          ),
-          ListTile(
-            title: Text(
-              'Mexican Jalfrezi',
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            leading: Icon(
-              FontAwesomeIcons.delicious,
-              color: Colors.deepPurple,
-              size: 25.0,
-            ),
-            subtitle: Text('Dish Name'),
-          ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: ListTile(
-                  title: Text(
-                    '20 mins',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  leading: Icon(
-                    FontAwesomeIcons.clock,
-                    color: Colors.deepPurple,
-                    size: 25.0,
-                  ),
-                  subtitle: Text('Preparation Time'),
-                ),
-              ),
-              Expanded(
-                child: ListTile(
-                  title: Text(
-                    'December 30,2019 at 10:17:00 PM',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  leading: Icon(
-                    FontAwesomeIcons.clock,
-                    color: Colors.deepPurple,
-                    size: 25.0,
-                  ),
-                  subtitle: Text('Published On'),
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
+  bool recipeFlag = false;
+  List<Recipe> recipes = [];
+  List<String> docID = [];
+  @override
+  void initState() {
+    super.initState();
+    RecipeService().getAllRecipes().then((QuerySnapshot queryDocs) {
+      if (queryDocs.documents.isNotEmpty) {
+        for (var r in queryDocs.documents) {
+          if (r.data['chef'] != widget.firebaseUser.displayName) {
+            docID.add(r.documentID);
+            recipes.add(Recipe(
+              chef: r.data['chef'],
+              recipeName: r.data['recipeName'],
+              prepTime: r.data['prepTime'],
+              readTime: r.data['readTime'],
+              procedure: r.data['procedure'],
+              ingredients: r.data['ingredients'],
+              likes: r.data['likes'],
+              pubDate: r.data['pubDate'],
+            ));
+          }
+        }
+      }
+      setState(() {
+        recipeFlag = true;
+      });
+    });
   }
 
-  Future<bool> logoutDialog(context) {
-    return showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
+  Widget _buildList() {
+    return ListView.builder(
+      itemCount: recipes.length,
+      itemBuilder: (BuildContext context, int index) {
+        return ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ViewRecipe(
+                    id: docID[index],
+                    recipe: recipes[index],
+                    firebaseUser: widget.firebaseUser,
+                  ),
+                ),
+              );
+            },
+            leading: Image(
+              image: AssetImage('assets/images/recipe.jpg'),
             ),
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 0.0),
-              height: 345.0,
-              width: 200.0,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              child: Column(
-                children: <Widget>[
-                  Stack(
-                    children: <Widget>[
-                      Container(
-                        height: 150.0,
-                      ),
-                      Container(
-                        height: 100.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10.0),
-                            topRight: Radius.circular(10.0),
-                          ),
-                          color: Colors.deepPurple,
-                        ),
-                      ),
-                      Positioned(
-                        top: 50.0,
-                        left: 90.0,
-                        child: Container(
-                          height: 100.0,
-                          width: 100.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50.0),
-                            border: Border.all(
-                              color: Colors.white,
-                              style: BorderStyle.solid,
-                              width: 3.0,
-                            ),
-                            image: DecorationImage(
-                              image: NetworkImage(widget.firebaseUser.photoUrl),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10.0),
-                  Padding(
-                    padding: EdgeInsets.all(5.0),
-                    child: Text(
-                      'Log out of Tasty Homes',
-                      style: TextStyle(
-                        fontFamily: 'Roboto',
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w600,
-                      ),
+            trailing: InkWell(
+              child: Icon(Icons.navigate_next, size: 30.0),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewRecipe(
+                      id: docID[index],
+                      recipe: recipes[index],
+                      firebaseUser: widget.firebaseUser,
                     ),
                   ),
-                  SizedBox(height: 10.0),
-                  Divider(),
-                  FlatButton(
-                    padding: EdgeInsets.all(5.0),
-                    child: Center(
-                      child: Text(
-                        'Logout',
-                        style: TextStyle(
-                          color: Colors.deepPurple,
-                        ),
-                      ),
-                    ),
-                    onPressed: () {
-                      print(
-                          'User \'${widget.firebaseUser.displayName}\' logged out');
-                      Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (context) => MyHomePage(),
-                          ),
-                          (Route<dynamic> route) => false);
-                    },
-                  ),
-                  Divider(),
-                  FlatButton(
-                    padding: EdgeInsets.symmetric(vertical: 0.0),
-                    child: Center(
-                      child: Text('Cancel'),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        });
+            title: Text(recipes[index].recipeName),
+            subtitle: Row(
+              children: <Widget>[
+                Icon(
+                  FontAwesomeIcons.solidCircle,
+                  size: 6.0,
+                  color: Colors.grey[400],
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 3.0),
+                ),
+                Text(
+                  '${recipes[index].readTime} mins read',
+                  style: TextStyle(fontSize: 12.0),
+                ),
+              ],
+            ));
+      },
+    );
   }
 
   @override
@@ -211,21 +116,25 @@ class _DashboardPageState extends State<DashboardPage> {
               showSearch(context: context, delegate: RecipeSearch());
             },
           ),
-          IconButton(
-            icon: Icon(FontAwesomeIcons.signOutAlt,
-                size: 20.0, color: Colors.white),
-            onPressed: () {
-              logoutDialog(context);
-            },
-          ),
         ],
       ),
       body: Container(
-        child: _buildCard(),
+        child: recipeFlag == true
+            ? _buildList()
+            : Center(
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 50.0),
+                  child: Column(
+                    children: <Widget>[
+                      CircularProgressIndicator(),
+                      Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
+                      Text('Loading.....'),
+                    ],
+                  ),
+                ),
+              ),
       ),
-      drawer: MyNavDrawer(
-        firebaseUser: widget.firebaseUser,
-      ),
+      drawer: AppDrawer(firebaseUser: widget.firebaseUser),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(

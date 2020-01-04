@@ -1,20 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:supervisory/Recipe.dart';
 
 class RecipeService {
-  String chef, recipeName, procedure, prepTime, readTime, ingredients;
-  int likes;
-  var pubDate;
-  RecipeService({
-    this.chef,
-    this.recipeName,
-    this.prepTime,
-    this.readTime,
-    this.ingredients,
-    this.procedure,
-    this.likes,
-    this.pubDate,
-  });
-
   getUserRecipes(String chef) {
     return Firestore.instance
         .collection('recipes')
@@ -23,16 +10,29 @@ class RecipeService {
         .getDocuments();
   }
 
-  addNewRecipe() {
+  getAllRecipes() {
+    return Firestore.instance
+        .collection('recipes')
+        .orderBy('pubDate', descending: true)
+        .orderBy('likes', descending: true)
+        .limit(50)
+        .getDocuments();
+  }
+
+  addNewRecipe(Recipe recipe) {
     return Firestore.instance.collection("recipes").document().setData({
-      "chef": chef,
-      "recipeName": recipeName,
-      "prepTime": prepTime,
-      "readTime": readTime,
-      "procedure": procedure,
-      "likes": likes,
-      "ingredients": ingredients,
-      "pubDate": pubDate,
+      "chef": recipe.chef,
+      "recipeName": recipe.recipeName,
+      "prepTime": recipe.prepTime,
+      "readTime": recipe.readTime,
+      "procedure": recipe.procedure,
+      "likes": recipe.likes,
+      "ingredients": recipe.ingredients,
+      "pubDate": recipe.pubDate,
     });
+  }
+
+  getSingleRecipe(String id) {
+    return Firestore.instance.collection('recipes/$id').snapshots();
   }
 }

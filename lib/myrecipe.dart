@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supervisory/ViewRecipe.dart';
+import 'package:supervisory/Recipe.dart';
 import 'package:supervisory/services/RecipeService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -14,7 +15,8 @@ class MyRecipePage extends StatefulWidget {
 
 class _MyRecipePageState extends State<MyRecipePage> {
   bool recipeFlag = false;
-  List<RecipeService> recipes = [];
+  List<Recipe> recipes = [];
+  List<String> docID = [];
   @override
   void initState() {
     super.initState();
@@ -22,12 +24,9 @@ class _MyRecipePageState extends State<MyRecipePage> {
         .getUserRecipes(widget.firebaseUser.displayName)
         .then((QuerySnapshot queryDocs) {
       if (queryDocs.documents.isNotEmpty) {
-        setState(() {
-          recipeFlag = true;
-        });
-
         for (var r in queryDocs.documents) {
-          recipes.add(RecipeService(
+          docID.add(r.documentID);
+          recipes.add(Recipe(
             chef: r.data['chef'],
             recipeName: r.data['recipeName'],
             prepTime: r.data['prepTime'],
@@ -39,6 +38,9 @@ class _MyRecipePageState extends State<MyRecipePage> {
           ));
         }
       }
+      setState(() {
+        recipeFlag = true;
+      });
     });
   }
 
@@ -57,25 +59,32 @@ class _MyRecipePageState extends State<MyRecipePage> {
                   return ListTile(
                       onTap: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ViewRecipe(
-                                      recipe: recipes[index],
-                                    )));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ViewRecipe(
+                              id: docID[index],
+                              recipe: recipes[index],
+                              firebaseUser: widget.firebaseUser,
+                            ),
+                          ),
+                        );
                       },
                       leading: Image(
-                        image:
-                            AssetImage('assets/images/profile-background.jpg'),
+                        image: AssetImage('assets/images/recipe.jpg'),
                       ),
                       trailing: InkWell(
                         child: Icon(Icons.navigate_next, size: 30.0),
                         onTap: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ViewRecipe(
-                                        recipe: recipes[index],
-                                      )));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ViewRecipe(
+                                id: docID[index],
+                                recipe: recipes[index],
+                                firebaseUser: widget.firebaseUser,
+                              ),
+                            ),
+                          );
                         },
                       ),
                       title: Text(recipes[index].recipeName),

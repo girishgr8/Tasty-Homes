@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supervisory/Dashboard.dart';
+import 'package:supervisory/Recipe.dart';
 import 'package:supervisory/services/RecipeService.dart';
 
 class NewRecipe extends StatefulWidget {
@@ -30,7 +31,7 @@ class _NewRecipeState extends State<NewRecipe> {
   }
 
   void _addRecipe(BuildContext context) {
-    RecipeService(
+    Recipe recipe = Recipe(
       chef: widget.firebaseUser.displayName,
       recipeName: recipeName.text,
       prepTime: prepTime.text,
@@ -39,7 +40,8 @@ class _NewRecipeState extends State<NewRecipe> {
       ingredients: ingredients.text,
       likes: 0,
       pubDate: DateTime.now(),
-    ).addNewRecipe().whenComplete(() {
+    );
+    RecipeService().addNewRecipe(recipe).whenComplete(() {
       showDialog(
         context: context,
         barrierDismissible: true,
@@ -49,7 +51,7 @@ class _NewRecipeState extends State<NewRecipe> {
               fontSize: 18.0,
               color: Colors.deepPurple,
             ),
-            title: Text('Successful !'),
+            title: Text('New Recipe added!'),
             elevation: 30.0,
             actions: <Widget>[
               FlatButton(
@@ -139,8 +141,6 @@ class _NewRecipeState extends State<NewRecipe> {
                       controller: ingredients,
                       minLines: 3,
                       maxLines: 10,
-                      keyboardType:
-                          TextInputType.numberWithOptions(decimal: false),
                       decoration: const InputDecoration(
                         hasFloatingPlaceholder: true,
                         labelText: 'Ingredients',

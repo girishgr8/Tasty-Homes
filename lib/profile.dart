@@ -15,7 +15,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  String count;
+  String count = "0";
   bool recipeFlag = false;
   bool userFlag = false;
   User user;
@@ -42,10 +42,10 @@ class _ProfileState extends State<Profile> {
           facebook: data['facebook'],
           instagram: data['instagram'],
         );
-        setState(() {
-          userFlag = true;
-        });
       }
+      setState(() {
+        userFlag = true;
+      });
     });
 
     RecipeService()
@@ -53,10 +53,10 @@ class _ProfileState extends State<Profile> {
         .then((QuerySnapshot queryDocs) {
       if (queryDocs.documents.isNotEmpty) {
         count = queryDocs.documents.length.toString();
-        setState(() {
-          recipeFlag = true;
-        });
       }
+      setState(() {
+        recipeFlag = true;
+      });
     });
   }
 

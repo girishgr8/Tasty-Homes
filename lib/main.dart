@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:supervisory/navDrawer.dart';
 import 'package:supervisory/Dashboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:supervisory/ViewApp.dart';
 
 void main() => runApp(MyApp());
 
@@ -60,9 +60,14 @@ class _MyHomePageState extends State<MyHomePage> {
         "instagram": "Not provided",
       }).whenComplete(() {
         print('New User ${user.displayName} added....!');
+
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => ViewApp(firebaseUser: user),
+            ),
+            (Route<dynamic> route) => false);
       });
     }
-
     print("Signed in, Username is: " + user.displayName);
     return user;
   }
@@ -91,13 +96,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   _signIn().then(
                     (FirebaseUser fireUser) {
                       print('User ${fireUser.displayName} signed in');
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              DashboardPage(firebaseUser: fireUser),
-                        ),
-                      );
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                DashboardPage(firebaseUser: fireUser),
+                          ),
+                          (Route<dynamic> route) => false);
                     },
                   ).catchError((err) => print(err));
                 },
@@ -132,17 +137,31 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   void initState() {
     super.initState();
+
     Timer(
       Duration(seconds: 5),
       () {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (context) => MyHomePage(),
-            ),
-            (Route<dynamic> route) => false);
+        _auth.currentUser().then((FirebaseUser firebaseUser) {
+          if (firebaseUser != null) {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      DashboardPage(firebaseUser: firebaseUser),
+                ),
+                (Route<dynamic> route) => false);
+          } else {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) => MyHomePage(),
+                ),
+                (Route<dynamic> route) => false);
+          }
+        }).catchError((err) => print(err));
       },
     );
   }
@@ -154,7 +173,7 @@ class _SplashScreenState extends State<SplashScreen> {
         fit: StackFit.expand,
         children: <Widget>[
           Container(
-            decoration: BoxDecoration(color: Colors.blueAccent),
+            decoration: BoxDecoration(color: Colors.deepPurpleAccent),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -194,7 +213,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    CircularProgressIndicator(),
+                    CircularProgressIndicator(backgroundColor: Colors.white),
                     Padding(
                       padding: EdgeInsets.only(top: 20.0),
                     ),
