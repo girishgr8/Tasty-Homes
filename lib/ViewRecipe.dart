@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supervisory/Recipe.dart';
-import 'package:supervisory/services/RecipeService.dart';
 
 class ViewRecipe extends StatelessWidget {
   final Recipe recipe;
@@ -123,13 +122,14 @@ class ViewRecipe extends StatelessWidget {
                                 Padding(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 4.0)),
-                                Text('${recipe.likes.toString()}'),
+                                Text(recipe.likes.toString()),
                               ],
                             ),
                           )
                         ],
                       ),
                     ),
+                    Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
                     Text(
                       'Ingredients',
                       style: TextStyle(
@@ -141,7 +141,7 @@ class ViewRecipe extends StatelessWidget {
                       ),
                     ),
                     Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
-                    Text('${recipe.ingredients}'),
+                    Text(recipe.ingredients),
                     Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
                     Text(
                       'Procedure',
@@ -156,43 +156,50 @@ class ViewRecipe extends StatelessWidget {
                     Padding(padding: EdgeInsets.only(bottom: 10.0)),
                     Text(recipe.procedure),
                     Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
-                    Divider(thickness: 0.8),
                     recipe.chef != firebaseUser.displayName
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                        ? Column(
                             children: <Widget>[
-                              FlatButton.icon(
-                                padding: EdgeInsets.symmetric(vertical: 4.0),
-                                icon: Icon(Icons.thumb_up),
-                                label: Text('Like'),
-                                onPressed: () {
-                                  print('Recipe Liked');
-                                },
-                              ),
-                              Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 20.0)),
-                              FlatButton.icon(
-                                padding: EdgeInsets.symmetric(vertical: 4.0),
-                                icon: Icon(Icons.comment),
-                                label: Text('Comment'),
-                                onPressed: () {
-                                  print('Commented on Recipe');
-                                },
-                              ),
-                              Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 13.0)),
-                              IconButton(
-                                padding: EdgeInsets.symmetric(vertical: 5.0),
-                                icon: Icon(
-                                  Icons.bookmark_border,
-                                  size: 25.0,
-                                ),
-                                onPressed: () {
-                                  print('Pressed');
-                                },
-                              ),
+                              Divider(thickness: 0.8),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  FlatButton.icon(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 4.0),
+                                    icon: Icon(Icons.thumb_up),
+                                    label: Text('Like'),
+                                    onPressed: () {
+                                      print('Recipe Liked');
+                                    },
+                                  ),
+                                  Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 20.0)),
+                                  FlatButton.icon(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 4.0),
+                                    icon: Icon(Icons.comment),
+                                    label: Text('Comment'),
+                                    onPressed: () {
+                                      print('Commented on Recipe');
+                                    },
+                                  ),
+                                  Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 13.0)),
+                                  IconButton(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 5.0),
+                                    icon: Icon(
+                                      Icons.bookmark_border,
+                                      size: 25.0,
+                                    ),
+                                    onPressed: () {
+                                      print('Pressed');
+                                    },
+                                  ),
+                                ],
+                              )
                             ],
                           )
                         : Container(),
