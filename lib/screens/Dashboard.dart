@@ -1,106 +1,102 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supervisory/NewRecipe.dart';
-import 'package:supervisory/ViewRecipe.dart';
 import 'package:supervisory/Recipe.dart';
-import 'package:supervisory/drawer.dart';
-import 'package:supervisory/services/RecipeService.dart';
+import 'package:supervisory/components/AppDrawer.dart';
 
-class DashboardPage extends StatefulWidget {
-  DashboardPage({Key key, this.firebaseUser}) : super(key: key);
+class Dashboard extends StatefulWidget {
+  Dashboard({Key key, this.firebaseUser}) : super(key: key);
   final FirebaseUser firebaseUser;
   @override
-  _DashboardPageState createState() => _DashboardPageState();
+  _DashboardState createState() => _DashboardState();
 }
 
-class _DashboardPageState extends State<DashboardPage> {
+class _DashboardState extends State<Dashboard> {
   bool recipeFlag = false;
   List<Recipe> recipes = [];
   List<String> docID = [];
-  @override
-  void initState() {
-    super.initState();
-    RecipeService().getAllRecipes().then((QuerySnapshot queryDocs) {
-      if (queryDocs.documents.isNotEmpty) {
-        for (var r in queryDocs.documents) {
-          if (r.data['chef'] != widget.firebaseUser.displayName) {
-            docID.add(r.documentID);
-            recipes.add(Recipe(
-              chef: r.data['chef'],
-              recipeName: r.data['recipeName'],
-              prepTime: r.data['prepTime'],
-              readTime: r.data['readTime'],
-              procedure: r.data['procedure'],
-              ingredients: r.data['ingredients'],
-              likes: r.data['likes'],
-              pubDate: r.data['pubDate'],
-            ));
-          }
-        }
-      }
-      setState(() {
-        recipeFlag = true;
-      });
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   RecipeService().getAllRecipes().then((QuerySnapshot queryDocs) {
+  //     if (queryDocs.documents.isNotEmpty) {
+  //       for (var r in queryDocs.documents) {
+  //         if (r.data['chef'] != widget.firebaseUser.displayName) {
+  //           docID.add(r.documentID);
+  //           recipes.add(Recipe(
+  //             chef: r.data['chef'],
+  //             recipeName: r.data['recipeName'],
+  //             prepTime: r.data['prepTime'],
+  //             readTime: r.data['readTime'],
+  //             procedure: r.data['procedure'],
+  //             ingredients: r.data['ingredients'],
+  //             likes: r.data['likes'],
+  //             pubDate: r.data['pubDate'],
+  //           ));
+  //         }
+  //       }
+  //     }
+  //     setState(() {
+  //       recipeFlag = true;
+  //     });
+  //   });
+  // }
 
-  Widget _buildList() {
-    return ListView.builder(
-      itemCount: recipes.length,
-      itemBuilder: (BuildContext context, int index) {
-        return ListTile(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ViewRecipe(
-                    id: docID[index],
-                    recipe: recipes[index],
-                    firebaseUser: widget.firebaseUser,
-                  ),
-                ),
-              );
-            },
-            leading: Image(
-              image: AssetImage('assets/images/recipe.jpg'),
-            ),
-            trailing: InkWell(
-              child: Icon(Icons.navigate_next, size: 30.0),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ViewRecipe(
-                      id: docID[index],
-                      recipe: recipes[index],
-                      firebaseUser: widget.firebaseUser,
-                    ),
-                  ),
-                );
-              },
-            ),
-            title: Text(recipes[index].recipeName),
-            subtitle: Row(
-              children: <Widget>[
-                Icon(
-                  FontAwesomeIcons.solidCircle,
-                  size: 6.0,
-                  color: Colors.grey[400],
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 3.0),
-                ),
-                Text(
-                  '${recipes[index].readTime} mins read',
-                  style: TextStyle(fontSize: 12.0),
-                ),
-              ],
-            ));
-      },
-    );
-  }
+  // Widget _buildList() {
+  //   return ListView.builder(
+  //     itemCount: recipes.length,
+  //     itemBuilder: (BuildContext context, int index) {
+  //       return ListTile(
+  //           onTap: () {
+  //             Navigator.push(
+  //               context,
+  //               MaterialPageRoute(
+  //                 builder: (context) => ViewRecipe(
+  //                   id: docID[index],
+  //                   recipe: recipes[index],
+  //                   firebaseUser: widget.firebaseUser,
+  //                 ),
+  //               ),
+  //             );
+  //           },
+  //           leading: Image(
+  //             image: AssetImage('assets/images/recipe.jpg'),
+  //           ),
+  //           trailing: InkWell(
+  //             child: Icon(Icons.navigate_next, size: 30.0),
+  //             onTap: () {
+  //               Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(
+  //                   builder: (context) => ViewRecipe(
+  //                     id: docID[index],
+  //                     recipe: recipes[index],
+  //                     firebaseUser: widget.firebaseUser,
+  //                   ),
+  //                 ),
+  //               );
+  //             },
+  //           ),
+  //           title: Text(recipes[index].recipeName),
+  //           subtitle: Row(
+  //             children: <Widget>[
+  //               Icon(
+  //                 FontAwesomeIcons.solidCircle,
+  //                 size: 6.0,
+  //                 color: Colors.grey[400],
+  //               ),
+  //               Padding(
+  //                 padding: EdgeInsets.symmetric(horizontal: 3.0),
+  //               ),
+  //               Text(
+  //                 '${recipes[index].readTime} mins read',
+  //                 style: TextStyle(fontSize: 12.0),
+  //               ),
+  //             ],
+  //           ));
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -119,8 +115,8 @@ class _DashboardPageState extends State<DashboardPage> {
         ],
       ),
       body: Container(
-        child: recipeFlag == true
-            ? _buildList()
+        child: recipeFlag == false
+            ? Container()
             : Center(
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 50.0),

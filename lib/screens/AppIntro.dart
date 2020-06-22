@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_walkthrough/walkthrough.dart';
 import 'package:flutter_walkthrough/flutter_walkthrough.dart';
-import 'package:supervisory/Dashboard.dart';
+import 'package:supervisory/screens/Dashboard.dart';
 
 class ViewApp extends StatelessWidget {
   final FirebaseUser firebaseUser;
@@ -41,6 +41,6 @@ class ViewApp extends StatelessWidget {
     return IntroScreen(
         list,
         MaterialPageRoute(
-            builder: (context) => DashboardPage(firebaseUser: firebaseUser)));
+            builder: (context) => Dashboard(firebaseUser: firebaseUser)));
   }
 }

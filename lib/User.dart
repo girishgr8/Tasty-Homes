@@ -1,17 +1,14 @@
 class User {
-  String name, email, bio, speciality, youtube, facebook, instagram;
-  int followers, following;
+  String name, email, bio, phone, photo;
+  int saved;
   var joinedDate;
   User({
     this.name,
     this.email,
     this.bio,
-    this.speciality,
-    this.followers,
-    this.following,
     this.joinedDate,
-    this.youtube,
-    this.facebook,
-    this.instagram,
+    this.photo,
+    this.phone,
+    this.saved,
   });
 }

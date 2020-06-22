@@ -1,11 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:supervisory/drawer.dart';
-import 'package:supervisory/services/RecipeService.dart';
-import 'package:supervisory/User.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // class Profile extends StatefulWidget {
@@ -464,15 +459,6 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  _githubURL(String $profileName) async {
-    var url = 'https://github.com/' + $profileName;
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
   _facebookURL(String $profileName) async {
     var url = 'https://facebook.com/' + $profileName;
     if (await canLaunch(url)) {
@@ -481,7 +467,7 @@ class _ProfileState extends State<Profile> {
       throw 'Could not launch $url';
     }
   }
-  
+
   _youtubeURL(String $profileName) async {
     var url = 'https://youtube.com/' + $profileName;
     if (await canLaunch(url)) {
@@ -517,7 +503,7 @@ class _ProfileState extends State<Profile> {
                       style: TextStyle(
                           color: new Color(0xff662d8c),
                           fontWeight: FontWeight.bold,
-                          fontSize:16.0),
+                          fontSize: 16.0),
                     ),
                   ),
                   Padding(
@@ -595,7 +581,7 @@ class _ProfileState extends State<Profile> {
                             },
                           ),
                         ),
-						Padding(
+                        Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: InkWell(
                             child: Material(
@@ -620,7 +606,8 @@ class _ProfileState extends State<Profile> {
                                 child: Padding(
                                   padding: EdgeInsets.all(8.0),
                                   child: Icon(FontAwesomeIcons.twitter,
-                                      color: Color.fromRGBO(8,160,233,1), size: 35.0),
+                                      color: Color.fromRGBO(8, 160, 233, 1),
+                                      size: 35.0),
                                 )),
                             onTap: () {
                               _twitterURL("girish");
@@ -636,7 +623,8 @@ class _ProfileState extends State<Profile> {
                                 child: Padding(
                                   padding: EdgeInsets.all(8.0),
                                   child: Icon(FontAwesomeIcons.linkedin,
-                                      color: Color.fromRGBO(0,119,181,1), size: 35.0),
+                                      color: Color.fromRGBO(0, 119, 181, 1),
+                                      size: 35.0),
                                 )),
                             onTap: () {
                               _linkedinURL("girish");
@@ -681,8 +669,8 @@ class _ProfileState extends State<Profile> {
               ),
               child: Stack(
                 children: <Widget>[
-                  profilePage("", "Italian Chef", "India", "200",
-                      "www.google.com"),
+                  profilePage(
+                      "", "Italian Chef", "India", "200", "www.google.com"),
                   ProfileImageWidget(firebaseUser: widget.firebaseUser),
                 ],
               ),
@@ -765,7 +753,7 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
   Widget build(BuildContext context) {
     return Positioned(
       top: 60.0,
-      left: 120.0,
+      left: 115.0,
       child: GestureDetector(
         onTap: () {
           print('image clicked');

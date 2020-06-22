@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:supervisory/MyRecipe.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:supervisory/main.dart';
+import 'package:supervisory/screens/EntryScreen.dart';
 import 'package:supervisory/profile.dart';
+import 'package:supervisory/recipe_single.dart';
 
 class AppDrawer extends StatefulWidget {
   AppDrawer({Key key, this.firebaseUser}) : super(key: key);
@@ -98,9 +99,10 @@ class _AppDrawerState extends State<AppDrawer> {
                       _auth.signOut();
                       print(
                           'User \'${widget.firebaseUser.displayName}\' logged out');
-                      Navigator.of(context).pushAndRemoveUntil(
+                      Navigator.pushAndRemoveUntil(
+                          context,
                           MaterialPageRoute(
-                            builder: (context) => MyHomePage(),
+                            builder: (context) => EntryScreen(),
                           ),
                           (Route<dynamic> route) => false);
                     },
@@ -179,6 +181,12 @@ class _AppDrawerState extends State<AppDrawer> {
             ),
             onTap: () {
               Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RecipeSinglePage(),
+                ),
+              );
             },
           ),
           Divider(),
