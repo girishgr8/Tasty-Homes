@@ -46,7 +46,7 @@ class _AppDrawerState extends State<AppDrawer> {
                             topLeft: Radius.circular(10.0),
                             topRight: Radius.circular(10.0),
                           ),
-                          color: Colors.deepPurple,
+                          color: Color.fromRGBO(28, 161, 239, 1),
                         ),
                       ),
                       Positioned(
@@ -91,7 +91,7 @@ class _AppDrawerState extends State<AppDrawer> {
                       child: Text(
                         'Logout',
                         style: TextStyle(
-                          color: Colors.deepPurple,
+                          color: Color.fromRGBO(28, 161, 239, 1),
                         ),
                       ),
                     ),
@@ -194,8 +194,8 @@ class _AppDrawerState extends State<AppDrawer> {
             title: Text('Logout'),
             leading: Icon(
               FontAwesomeIcons.signOutAlt,
-              size: 20.0,
-              color: Colors.deepPurple,
+              size: 22.0,
+              color: Color.fromRGBO(28, 161, 239, 1),
             ),
             onTap: () {
               logoutDialog(context);

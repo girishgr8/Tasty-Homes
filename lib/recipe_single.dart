@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'recipe_details.dart';
+import 'package:supervisory/components/RecipeDetail.dart';
 
 class RecipeSinglePage extends StatelessWidget {
   final Color icon = Color(0xffEF412D);
@@ -135,7 +135,7 @@ class RecipeSinglePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => RecipeDetailsPage(),
+                      builder: (_) => RecipeDetail(),
                     ),
                   );
                 },

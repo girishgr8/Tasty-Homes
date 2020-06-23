@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:supervisory/Recipe.dart';
 import 'package:supervisory/services/RecipeService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:supervisory/components/RecipeDetail.dart';
 
 class MyRecipePage extends StatefulWidget {
   MyRecipePage({Key key, this.firebaseUser}) : super(key: key);
@@ -22,21 +23,23 @@ class _MyRecipePageState extends State<MyRecipePage> {
       if (queryDocs.documents.isNotEmpty) {
         for (var r in queryDocs.documents) {
           docID.add(r.documentID);
-
           recipes.add(Recipe(
-            calories: r.data['calories'],
+            cookingMinutes: r.data['cookingMinutes'],
+            cuisines: r.data['cuisines'],
+            diets: r.data['diets'],
+            dishTypes: r.data['dishTypes'],
+            imageUrl: r.data['imageUrl'],
             ingredients: r.data['ingredients'],
-            totalNutrients: r.data['totalNutrients'],
             likes: r.data['likes'],
-            image: r.data['image'],
-            totalTime: r.data['totalTime'],
-            name: r.data['name'],
-            dietLabels: r.data['dietLabels'],
-            yieldQ: r.data['yield'],
-            healthLabels: r.data['healthLabels'],
+            preparationMinutes: r.data['preparationMinutes'],
+            procedure: r.data['procedure'],
+            servings: r.data['servings'],
+            summary: r.data['summary'],
+            title: r.data['title'],
+            vegetarian: r.data['vegetarian'],
           ));
         }
-        print(recipes[0].healthLabels);
+        print(recipes[0].diets);
       }
       setState(() {
         recipeFlag = true;
@@ -281,7 +284,18 @@ class _MyRecipePageState extends State<MyRecipePage> {
         child: Center(
           child: Column(
             children: <Widget>[
-              recipeFlag ? Text(this.recipes[0].name) : Container()
+              FlatButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => RecipeDetail(
+                          firebaseUser: widget.firebaseUser,
+                          recipe: recipes[1]),
+                    ),
+                  );
+                },
+                child: Text("View Details".toUpperCase()),
+              )
             ],
           ),
         ),

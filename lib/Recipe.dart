@@ -1,19 +1,21 @@
 class Recipe {
-  double calories;
-  int likes, totalTime, yieldQ;
-  String name, image;
-  List<dynamic> ingredients, dietLabels, healthLabels;
-  Map<dynamic, dynamic> totalNutrients;
+  int cookingMinutes, preparationMinutes, servings, likes;
+  String imageUrl, summary, title;
+  bool vegetarian;
+  List<dynamic> ingredients, cuisines, diets, dishTypes, procedure;
   Recipe({
-    this.calories,
+    this.cookingMinutes,
+    this.cuisines,
+    this.diets,
+    this.dishTypes,
+    this.imageUrl,
     this.ingredients,
-    this.totalNutrients,
     this.likes,
-    this.image,
-    this.totalTime,
-    this.name,
-    this.dietLabels,
-    this.yieldQ,
-    this.healthLabels,
+    this.preparationMinutes,
+    this.procedure,
+    this.servings,
+    this.summary,
+    this.title,
+    this.vegetarian,
   });
 }
