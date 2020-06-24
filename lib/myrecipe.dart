@@ -290,7 +290,7 @@ class _MyRecipePageState extends State<MyRecipePage> {
                     MaterialPageRoute(
                       builder: (context) => RecipeDetail(
                           firebaseUser: widget.firebaseUser,
-                          recipe: recipes[1]),
+                          recipe: recipes[2]),
                     ),
                   );
                 },

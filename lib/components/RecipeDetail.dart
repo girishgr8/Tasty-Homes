@@ -14,6 +14,53 @@ class RecipeDetail extends StatefulWidget {
 }
 
 class _RecipeDetailState extends State<RecipeDetail> {
+  Widget _buildIngredient(int idx, String ingredient) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Material(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+          color: Color.fromRGBO(28, 161, 239, 1),
+          child: Container(
+            width: 30.0,
+            padding: EdgeInsets.symmetric(vertical: 2.0),
+            child: Center(
+              child: Text(
+                idx <= 9 ? "0" + idx.toString() : idx.toString(),
+                style: TextStyle(color: Colors.white, fontSize: 16.0),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 16.0,
+        ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(ingredient, style: TextStyle(fontSize: 16.0)),
+              SizedBox(
+                height: 10.0,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 30),
+      ],
+    );
+  }
+
+  String _getCuisineText() {
+    String text = "";
+    int i = 0;
+    for (i = 0; i < widget.recipe.cuisines.length - 1; i++)
+      text += widget.recipe.cuisines[i] + ", ";
+    text += widget.recipe.cuisines[i];
+    return text;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,83 +106,181 @@ class _RecipeDetailState extends State<RecipeDetail> {
                   child: Row(
                     children: <Widget>[
                       Expanded(
+                        flex: 1,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Icon(FontAwesomeIcons.clock, size: 18.0),
+                            Icon(FontAwesomeIcons.clock,
+                                size: 18.0,
+                                color: Color.fromRGBO(28, 161, 239, 1)),
                             SizedBox(
                               width: 10.0,
                             ),
                             Text(widget.recipe.preparationMinutes.toString() +
-                                "mins"),
+                                "m"),
                           ],
                         ),
                       ),
                       VerticalDivider(),
                       Expanded(
+                        flex: 2,
                         child: widget.recipe.vegetarian
                             ? Text(
                                 "Vegetarian",
                                 textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.w600),
                               )
                             : Text(
                                 "Non-Vegetarian",
                                 textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w600),
                               ),
                       ),
                       VerticalDivider(),
                       Expanded(
+                        flex: 1,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Icon(Icons.fastfood, size: 20.0),
+                            Icon(FontAwesomeIcons.fire,
+                                size: 20.0, color: Colors.red),
                             SizedBox(
                               width: 10.0,
                             ),
-                            Text(widget.recipe.cookingMinutes.toString() +
-                                "mins"),
+                            Text(widget.recipe.cookingMinutes.toString() + "m"),
                           ],
                         ),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 20.0,
+                SizedBox(height: 10),
+                Divider(),
+                SizedBox(height: 5),
+                Text(
+                  "Ingredients",
+                  style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromRGBO(28, 161, 239, 1),
+                      decoration: TextDecoration.underline,
+                      decorationStyle: TextDecorationStyle.solid),
                 ),
-                _buildStep(
-                    leadingTitle: "01",
-                    title: "Step".toUpperCase(),
-                    content: widget.recipe.procedure[0]),
-                SizedBox(
-                  height: 30.0,
+                SizedBox(height: 15),
+                Column(
+                  children: widget.recipe.ingredients
+                      .asMap()
+                      .entries
+                      .map((MapEntry entry) =>
+                          _buildIngredient(entry.key + 1, entry.value))
+                      .toList(),
                 ),
-                _buildStep(
-                    leadingTitle: "02",
-                    title: "Step".toUpperCase(),
-                    content: widget.recipe.procedure[1]),
-                SizedBox(
-                  height: 30.0,
+                SizedBox(height: 10.0),
+                Divider(),
+                SizedBox(height: 10.0),
+                Text(
+                  "Procedure",
+                  style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromRGBO(28, 161, 239, 1),
+                      decoration: TextDecoration.underline,
+                      decorationStyle: TextDecorationStyle.solid),
                 ),
-                _buildStep(
-                    leadingTitle: "03",
-                    title: "Step".toUpperCase(),
-                    content: widget.recipe.procedure[2]),
-                SizedBox(
-                  height: 30.0,
+                SizedBox(height: 15),
+                Column(
+                  children: widget.recipe.procedure
+                      .asMap()
+                      .entries
+                      .map((MapEntry entry) {
+                    return Column(
+                      children: <Widget>[
+                        _buildStep(
+                            idx: (entry.key + 1),
+                            title: "Step".toUpperCase(),
+                            content: entry.value),
+                        SizedBox(height: 20.0),
+                      ],
+                    );
+                  }).toList(),
                 ),
-                _buildStep(
-                    leadingTitle: "04",
-                    title: "Step".toUpperCase(),
-                    content: widget.recipe.procedure[3]),
-                SizedBox(
-                  height: 30.0,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    FlatButton.icon(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0)),
+                      padding: EdgeInsets.symmetric(vertical: 2.0),
+                      color: Color.fromRGBO(28, 161, 239, 1),
+                      label: Text('Like',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16.0)),
+                      icon:
+                          Icon(Icons.thumb_up, size: 20.0, color: Colors.white),
+                      onPressed: () {},
+                    ),
+                    SizedBox(width: 15.0),
+                    FlatButton.icon(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0)),
+                      padding: EdgeInsets.symmetric(vertical: 2.0),
+                      color: Color.fromRGBO(28, 161, 239, 1),
+                      label: Text('Save',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16.0)),
+                      icon: Icon(Icons.bookmark_border,
+                          size: 22.0, color: Colors.white),
+                      onPressed: () {},
+                    ),
+                    SizedBox(width: 15.0),
+                    FlatButton.icon(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0)),
+                      padding: EdgeInsets.symmetric(vertical: 2.0),
+                      color: Color.fromRGBO(28, 161, 239, 1),
+                      label: Text('Share',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16.0)),
+                      icon: Icon(Icons.share, size: 20.0, color: Colors.white),
+                      onPressed: () {},
+                    ),
+                  ],
                 ),
-                _buildStep(
-                    leadingTitle: "05",
-                    title: "Step".toUpperCase(),
-                    content: widget.recipe.procedure[4]),
               ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
+            margin: EdgeInsets.symmetric(vertical: 0.0),
+            height: 50,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(horizontal: 5.0),
+              children: widget.recipe.diets.map((label) {
+                return Container(
+                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                  child: InputChip(
+                      avatar: Icon(
+                        FontAwesomeIcons.tag,
+                        size: 18.0,
+                      ),
+                      label: Text(label),
+                      onPressed: () {}),
+                );
+              }).toList(),
             ),
           ),
           Material(
@@ -167,7 +312,7 @@ class _RecipeDetailState extends State<RecipeDetail> {
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -184,22 +329,25 @@ class _RecipeDetailState extends State<RecipeDetail> {
     );
   }
 
-  Widget _buildStep({String leadingTitle, String title, String content}) {
+  Widget _buildStep({int idx, String title, String content}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Material(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-          color: Colors.red,
+          color: Color.fromRGBO(28, 161, 239, 1),
           child: Container(
+            width: 35.0,
             padding: EdgeInsets.all(5.0),
-            child: Text(
-              leadingTitle,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0),
+            child: Center(
+              child: Text(
+                idx <= 9 ? "0" + idx.toString() : idx.toString(),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0),
+              ),
             ),
           ),
         ),
@@ -219,7 +367,7 @@ class _RecipeDetailState extends State<RecipeDetail> {
               Text(content),
             ],
           ),
-        )
+        ),
       ],
     );
   }
