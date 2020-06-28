@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
-
+import 'package:share/share.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supervisory/Recipe.dart';
 
@@ -14,6 +14,14 @@ class RecipeDetail extends StatefulWidget {
 }
 
 class _RecipeDetailState extends State<RecipeDetail> {
+  void share(BuildContext context) {
+    final RenderBox box = context.findRenderObject();
+
+    Share.share(widget.recipe.title,
+        subject: widget.recipe.title,
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+  }
+
   Widget _buildIngredient(int idx, String ingredient) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,15 +58,6 @@ class _RecipeDetailState extends State<RecipeDetail> {
         SizedBox(height: 30),
       ],
     );
-  }
-
-  String _getCuisineText() {
-    String text = "";
-    int i = 0;
-    for (i = 0; i < widget.recipe.cuisines.length - 1; i++)
-      text += widget.recipe.cuisines[i] + ", ";
-    text += widget.recipe.cuisines[i];
-    return text;
   }
 
   @override
@@ -255,7 +254,7 @@ class _RecipeDetailState extends State<RecipeDetail> {
                               fontWeight: FontWeight.w500,
                               fontSize: 16.0)),
                       icon: Icon(Icons.share, size: 20.0, color: Colors.white),
-                      onPressed: () {},
+                      onPressed: () => share(context),
                     ),
                   ],
                 ),

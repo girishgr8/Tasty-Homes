@@ -418,19 +418,19 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   //Circular Image
-  Positioned _profileImage(String img) {
-    return Positioned(
-      top: 0.0,
-      left: 100.0,
-      child: Container(
-          width: 160.0,
-          height: 160.0,
-          decoration: new BoxDecoration(
-              shape: BoxShape.circle,
-              image: new DecorationImage(
-                  fit: BoxFit.fill, image: new NetworkImage(img)))),
-    );
-  }
+  // Positioned _profileImage(String img) {
+  //   return Positioned(
+  //     top: 0.0,
+  //     left: 100.0,
+  //     child: Container(
+  //         width: 160.0,
+  //         height: 160.0,
+  //         decoration: new BoxDecoration(
+  //             shape: BoxShape.circle,
+  //             image: new DecorationImage(
+  //                 fit: BoxFit.fill, image: new NetworkImage(img)))),
+  //   );
+  // }
 
   _openURL() async {
     const url = 'https://flutter.io';
