@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,21 +8,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:supervisory/screens/AppIntro.dart';
 import 'package:supervisory/animations/FadeIn.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:supervisory/screens/RegisterScreen.dart';
+import 'package:supervisory/screens/EntryScreen.dart';
 
-class EntryScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   @override
-  _EntryScreenState createState() => _EntryScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _EntryScreenState extends State<EntryScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  final password = TextEditingController();
   final email = TextEditingController();
+  final name = TextEditingController();
+  final password = TextEditingController();
+  final confirmpassword = TextEditingController();
+  final phone = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  bool isVisible = false;
+  bool isPasswordVisible = false;
+  bool isConfirmPasswordVisible = false;
 
   Future<FirebaseUser> _signIn(BuildContext context) async {
     GoogleSignInAccount googleUser = await _googleSignIn.signIn();
@@ -62,11 +65,6 @@ class _EntryScreenState extends State<EntryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Tasty Homes'),
-      //   centerTitle: true,
-      //   elevation: defaultTargetPlatform == TargetPlatform.android ? 5.0 : 0.0,
-      // ),
       body: SingleChildScrollView(
         child: Container(
           child: Column(
@@ -146,6 +144,30 @@ class _EntryScreenState extends State<EntryScreen> {
                           padding: EdgeInsets.symmetric(vertical: 10.0),
                         ),
                         TextFormField(
+                          controller: name,
+                          toolbarOptions: ToolbarOptions(
+                            copy: true,
+                            selectAll: true,
+                            paste: true,
+                          ),
+                          decoration: InputDecoration(
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
+                            labelText: 'Name',
+                            prefixIcon: Icon(Icons.person),
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(4.0)),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) return 'Please enter your name';
+                            return null;
+                          },
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10.0),
+                        ),
+                        TextFormField(
                           controller: password,
                           toolbarOptions:
                               ToolbarOptions(paste: false, copy: false),
@@ -154,12 +176,12 @@ class _EntryScreenState extends State<EntryScreen> {
                             labelText: 'Password',
                             prefixIcon: Icon(Icons.lock),
                             suffixIcon: IconButton(
-                                icon: isVisible
+                                icon: isPasswordVisible
                                     ? Icon(Icons.visibility)
                                     : Icon(Icons.visibility_off),
                                 onPressed: () {
                                   setState(() {
-                                    isVisible = !isVisible;
+                                    isPasswordVisible = !isPasswordVisible;
                                   });
                                 }),
                             border: OutlineInputBorder(
@@ -167,7 +189,7 @@ class _EntryScreenState extends State<EntryScreen> {
                                   BorderRadius.all(Radius.circular(4.0)),
                             ),
                           ),
-                          obscureText: isVisible ? false : true,
+                          obscureText: isPasswordVisible ? false : true,
                           validator: (value) {
                             if (value.isEmpty)
                               return 'Please enter your password';
@@ -176,20 +198,72 @@ class _EntryScreenState extends State<EntryScreen> {
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(vertical: 10.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              GestureDetector(
-                                onTap: () {},
-                                child: Text(
-                                  "Forgot Password ?",
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(108, 117, 125, 1)),
-                                ),
-                              ),
-                            ],
-                          ),
                         ),
+                        TextFormField(
+                          controller: confirmpassword,
+                          toolbarOptions:
+                              ToolbarOptions(paste: false, copy: false),
+                          decoration: InputDecoration(
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
+                            labelText: 'Confirm Password',
+                            prefixIcon: Icon(Icons.lock),
+                            suffixIcon: IconButton(
+                                icon: isConfirmPasswordVisible
+                                    ? Icon(Icons.visibility)
+                                    : Icon(Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    isConfirmPasswordVisible = !isConfirmPasswordVisible;
+                                  });
+                                }),
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(4.0)),
+                            ),
+                          ),
+                          obscureText: isConfirmPasswordVisible ? false : true,
+                          validator: (value) {
+                            if (value.isEmpty)
+                              return 'Please enter your password to confirm';
+                            if (value.toString() != password.value.toString())
+                              return "Passwords do not match";
+                            return null;
+                          },
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10.0),
+                        ),
+                        TextFormField(
+                          controller: phone,
+                          maxLength: 10,
+                          buildCounter: (BuildContext context,
+                                  {int currentLength,
+                                  int maxLength,
+                                  bool isFocused}) =>
+                              null,
+                          keyboardType:
+                              TextInputType.numberWithOptions(decimal: false),
+                          toolbarOptions: ToolbarOptions(
+                            copy: true,
+                            selectAll: true,
+                            paste: true,
+                          ),
+                          decoration: InputDecoration(
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
+                            labelText: 'Phone Number',
+                            prefixIcon: Icon(Icons.phone),
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(4.0)),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty)
+                              return 'Please enter phone number';
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 15.0),
                         Container(
                           width: MediaQuery.of(context).size.width,
                           child: Padding(
@@ -200,7 +274,7 @@ class _EntryScreenState extends State<EntryScreen> {
                                 if (_formKey.currentState.validate()) {}
                               },
                               child: Text(
-                                "LOGIN",
+                                "REGISTER",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 18.0,
@@ -215,20 +289,16 @@ class _EntryScreenState extends State<EntryScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              "Don't have an account?",
+                              "Already have an account?",
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),
                             SizedBox(width: 5.0),
                             InkWell(
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => RegisterScreen()),
-                                );
+                                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => EntryScreen()), (route) => false);
                               },
                               child: Text(
-                                "SIGNUP",
+                                "LOGIN",
                                 style: TextStyle(
                                     fontSize: 17.0,
                                     color: Color.fromRGBO(28, 161, 239, 1),
@@ -267,7 +337,7 @@ class _EntryScreenState extends State<EntryScreen> {
                       1.7,
                       SignInButton(
                         Buttons.GoogleDark,
-                        text: "Sign In with Google",
+                        text: "Sign Up with Google",
                         onPressed: () {
                           _signIn(context).then(
                             (FirebaseUser fireUser) {
@@ -285,7 +355,7 @@ class _EntryScreenState extends State<EntryScreen> {
                       1.7,
                       SignInButton(
                         Buttons.Facebook,
-                        text: "Sign In with Facebook",
+                        text: "Sign Up with Facebook",
                         onPressed: () {},
                       ),
                     ),

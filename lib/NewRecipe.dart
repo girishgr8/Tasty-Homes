@@ -92,7 +92,7 @@ class _NewRecipeState extends State<NewRecipe> {
                   children: <Widget>[
                     TextFormField(
                       controller: recipeName,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         floatingLabelBehavior: FloatingLabelBehavior.auto,
                         labelText: 'Dish Name',
                         prefixIcon: Icon(FontAwesomeIcons.cookieBite),
@@ -115,10 +115,12 @@ class _NewRecipeState extends State<NewRecipe> {
                       controller: prepTime,
                       keyboardType:
                           TextInputType.numberWithOptions(decimal: false),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         floatingLabelBehavior: FloatingLabelBehavior.auto,
                         labelText: 'Preparation Time',
                         prefixIcon: Icon(FontAwesomeIcons.solidClock),
+                        suffixIcon: IconButton(
+                            icon: Icon(Icons.remove_red_eye), onPressed: () {}),
                         suffixText: 'minutes',
                         labelStyle: TextStyle(fontSize: 16.0),
                         border: OutlineInputBorder(
@@ -139,7 +141,7 @@ class _NewRecipeState extends State<NewRecipe> {
                       controller: ingredients,
                       minLines: 3,
                       maxLines: 10,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         floatingLabelBehavior: FloatingLabelBehavior.auto,
                         labelText: 'Ingredients',
                         labelStyle: TextStyle(fontSize: 16.0),
@@ -167,7 +169,7 @@ class _NewRecipeState extends State<NewRecipe> {
                         paste: true,
                         cut: true,
                       ),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         floatingLabelBehavior: FloatingLabelBehavior.auto,
                         labelText: 'Procedure',
                         labelStyle: TextStyle(fontSize: 16.0),
@@ -189,7 +191,7 @@ class _NewRecipeState extends State<NewRecipe> {
                       controller: readTime,
                       keyboardType:
                           TextInputType.numberWithOptions(decimal: false),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         floatingLabelBehavior: FloatingLabelBehavior.auto,
                         labelText: 'Read Time',
                         prefixIcon: Icon(FontAwesomeIcons.solidClock),

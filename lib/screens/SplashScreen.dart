@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supervisory/screens/Dashboard.dart';
 import 'package:supervisory/screens/EntryScreen.dart';
+import 'package:supervisory/animations/FadeIn.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -57,24 +58,30 @@ class _SplashScreenState extends State<SplashScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        radius: 50.0,
-                        child: Icon(
-                          FontAwesomeIcons.book,
-                          color: Colors.redAccent,
-                          size: 50.0,
+                      FadeIn(
+                        1.0,
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 50.0,
+                          child: Icon(
+                            FontAwesomeIcons.book,
+                            color: Colors.redAccent,
+                            size: 50.0,
+                          ),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.only(top: 10.0),
                       ),
-                      Text(
-                        'Tasty Homes',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
+                      FadeIn(
+                        1.3,
+                        Text(
+                          'Tasty Homes',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ],
@@ -90,20 +97,26 @@ class _SplashScreenState extends State<SplashScreen> {
                     Padding(
                       padding: EdgeInsets.only(top: 20.0),
                     ),
-                    Text(
-                      'Online Recipe Book',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
+                    FadeIn(
+                      1.4,
+                      Text(
+                        'Online Recipe Book',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    Text(
-                      'For Everyone',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
+                    FadeIn(
+                      1.6,
+                      Text(
+                        'For Everyone',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],

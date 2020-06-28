@@ -317,13 +317,57 @@ class _RecipeDetailState extends State<RecipeDetail> {
     );
   }
 
-  Container _buildBottomImage(String imageUrl) {
-    return Container(
-      width: 80,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        image:
-            DecorationImage(image: NetworkImage(imageUrl), fit: BoxFit.cover),
+  Future<bool> _showImageDialog(String imageUrl) {
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          insetAnimationDuration: Duration(seconds: 1),
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: 345.0,
+                width: 200.0,
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      height: 345.0,
+                      width: 200.0,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(imageUrl),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    RaisedButton.icon(
+                      onPressed: () => Navigator.pop(context),
+                      icon: Icon(Icons.close),
+                      label: Text('Close'),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildBottomImage(String imageUrl) {
+    return GestureDetector(
+      onTap: () => _showImageDialog(imageUrl),
+      child: Container(
+        width: 80,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          image:
+              DecorationImage(image: NetworkImage(imageUrl), fit: BoxFit.cover),
+        ),
       ),
     );
   }

@@ -32,6 +32,8 @@ dependencies:
     url_launcher:
     flutter_walkthrough:
     share:
+    simple_animations:
+    flutter_signin_button:
 
 dev_dependencies:
     flutter_test:
