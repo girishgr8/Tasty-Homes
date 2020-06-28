@@ -86,10 +86,13 @@ class _EntryScreenState extends State<EntryScreen> {
                       CircleAvatar(
                         backgroundColor: Colors.white24,
                         radius: 60.0,
-                        child: Icon(
-                          FontAwesomeIcons.book,
-                          color: Colors.redAccent,
-                          size: 60.0,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 2,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage("assets/images/logo.jpg"),
+                            ),
+                          ),
                         ),
                       ),
                     ),

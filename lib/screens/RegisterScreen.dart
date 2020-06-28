@@ -84,10 +84,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       CircleAvatar(
                         backgroundColor: Colors.white24,
                         radius: 60.0,
-                        child: Icon(
-                          FontAwesomeIcons.book,
-                          color: Colors.redAccent,
-                          size: 60.0,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 2,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage("assets/images/logo.jpg"),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -213,7 +216,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     : Icon(Icons.visibility_off),
                                 onPressed: () {
                                   setState(() {
-                                    isConfirmPasswordVisible = !isConfirmPasswordVisible;
+                                    isConfirmPasswordVisible =
+                                        !isConfirmPasswordVisible;
                                   });
                                 }),
                             border: OutlineInputBorder(
@@ -295,7 +299,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             SizedBox(width: 5.0),
                             InkWell(
                               onTap: () {
-                                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => EntryScreen()), (route) => false);
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => EntryScreen()),
+                                    (route) => false);
                               },
                               child: Text(
                                 "LOGIN",
