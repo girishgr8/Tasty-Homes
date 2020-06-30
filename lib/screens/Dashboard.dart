@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:supervisory/NewRecipe.dart';
-import 'package:supervisory/Recipe.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:supervisory/helpers/classes/Recipe.dart';
 import 'package:supervisory/components/AppDrawer.dart';
+import 'package:supervisory/components/RecipeDetail.dart';
+import 'package:supervisory/helpers/services/RecipeService.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({Key key, this.firebaseUser}) : super(key: key);
@@ -14,89 +17,90 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   bool recipeFlag = false;
   List<Recipe> recipes = [];
-  List<String> docID = [];
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   RecipeService().getAllRecipes().then((QuerySnapshot queryDocs) {
-  //     if (queryDocs.documents.isNotEmpty) {
-  //       for (var r in queryDocs.documents) {
-  //         if (r.data['chef'] != widget.firebaseUser.displayName) {
-  //           docID.add(r.documentID);
-  //           recipes.add(Recipe(
-  //             chef: r.data['chef'],
-  //             recipeName: r.data['recipeName'],
-  //             prepTime: r.data['prepTime'],
-  //             readTime: r.data['readTime'],
-  //             procedure: r.data['procedure'],
-  //             ingredients: r.data['ingredients'],
-  //             likes: r.data['likes'],
-  //             pubDate: r.data['pubDate'],
-  //           ));
-  //         }
-  //       }
-  //     }
-  //     setState(() {
-  //       recipeFlag = true;
-  //     });
-  //   });
-  // }
+  List<String> recipeIDs = [];
+  @override
+  void initState() {
+    super.initState();
+    RecipeService().getUserRecipes().then((QuerySnapshot queryDocs) {
+      if (queryDocs.documents.isNotEmpty) {
+        for (var r in queryDocs.documents) {
+          recipeIDs.add(r.documentID);
+          recipes.add(Recipe(
+            cookingMinutes: r.data['cookingMinutes'],
+            cuisines: r.data['cuisines'],
+            diets: r.data['diets'],
+            dishTypes: r.data['dishTypes'],
+            imageUrl: r.data['imageUrl'],
+            ingredients: r.data['ingredients'],
+            likes: r.data['likes'],
+            preparationMinutes: r.data['preparationMinutes'],
+            procedure: r.data['procedure'],
+            servings: r.data['servings'],
+            summary: r.data['summary'],
+            title: r.data['title'],
+            vegetarian: r.data['vegetarian'],
+          ));
+        }
+      }
+      setState(() {
+        recipeFlag = true;
+      });
+    });
+  }
 
-  // Widget _buildList() {
-  //   return ListView.builder(
-  //     itemCount: recipes.length,
-  //     itemBuilder: (BuildContext context, int index) {
-  //       return ListTile(
-  //           onTap: () {
-  //             Navigator.push(
-  //               context,
-  //               MaterialPageRoute(
-  //                 builder: (context) => ViewRecipe(
-  //                   id: docID[index],
-  //                   recipe: recipes[index],
-  //                   firebaseUser: widget.firebaseUser,
-  //                 ),
-  //               ),
-  //             );
-  //           },
-  //           leading: Image(
-  //             image: AssetImage('assets/images/recipe.jpg'),
-  //           ),
-  //           trailing: InkWell(
-  //             child: Icon(Icons.navigate_next, size: 30.0),
-  //             onTap: () {
-  //               Navigator.push(
-  //                 context,
-  //                 MaterialPageRoute(
-  //                   builder: (context) => ViewRecipe(
-  //                     id: docID[index],
-  //                     recipe: recipes[index],
-  //                     firebaseUser: widget.firebaseUser,
-  //                   ),
-  //                 ),
-  //               );
-  //             },
-  //           ),
-  //           title: Text(recipes[index].recipeName),
-  //           subtitle: Row(
-  //             children: <Widget>[
-  //               Icon(
-  //                 FontAwesomeIcons.solidCircle,
-  //                 size: 6.0,
-  //                 color: Colors.grey[400],
-  //               ),
-  //               Padding(
-  //                 padding: EdgeInsets.symmetric(horizontal: 3.0),
-  //               ),
-  //               Text(
-  //                 '${recipes[index].readTime} mins read',
-  //                 style: TextStyle(fontSize: 12.0),
-  //               ),
-  //             ],
-  //           ));
-  //     },
-  //   );
-  // }
+  Widget _buildList() {
+    return ListView.builder(
+      itemCount: recipes.length,
+      itemBuilder: (BuildContext context, int index) {
+        return ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RecipeDetail(
+                    firebaseUser: widget.firebaseUser,
+                    recipe: recipes[index],
+                    docID: recipeIDs[index],
+                  ),
+                ),
+              );
+            },
+            leading: Image(
+              image: NetworkImage(recipes[index].imageUrl),
+            ),
+            trailing: InkWell(
+              child: Icon(Icons.navigate_next, size: 30.0),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RecipeDetail(
+                        firebaseUser: widget.firebaseUser,
+                        recipe: recipes[index]),
+                  ),
+                );
+              },
+            ),
+            title: Text(recipes[index].title),
+            subtitle: Row(
+              children: <Widget>[
+                Icon(
+                  FontAwesomeIcons.solidCircle,
+                  size: 6.0,
+                  color: Colors.grey[400],
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 3.0),
+                ),
+                Text(
+                  '${recipes[index].preparationMinutes} mins preparation',
+                  style: TextStyle(fontSize: 12.0),
+                ),
+              ],
+            ));
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,8 +119,8 @@ class _DashboardState extends State<Dashboard> {
         ],
       ),
       body: Container(
-        child: recipeFlag == false
-            ? Container()
+        child: recipeFlag == true
+            ? _buildList()
             : Center(
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 50.0),
@@ -131,19 +135,6 @@ class _DashboardState extends State<Dashboard> {
               ),
       ),
       drawer: AppDrawer(firebaseUser: widget.firebaseUser),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  NewRecipe(firebaseUser: widget.firebaseUser),
-            ),
-          );
-        },
-        child: Icon(Icons.add),
-        tooltip: 'Add Recipe',
-      ),
       // bottomNavigationBar: BottomNavigationBar(
       //   items: [
       //     BottomNavigationBarItem(
@@ -166,13 +157,13 @@ class _DashboardState extends State<Dashboard> {
 
 class RecipeSearch extends SearchDelegate<String> {
   final cities = [
-    "Mumbai",
+    "Potato Vada",
     "Delhi",
-    "Nagpur",
-    "Kolkata",
+    "Medu Wada",
+    "Potato Chips",
     "Nashik",
     "Chennai",
-    "Pune",
+    "Pav Bhaji",
     "Hyderabad",
     "Noida",
     "Udaipur",
@@ -195,7 +186,7 @@ class RecipeSearch extends SearchDelegate<String> {
     "Rajkot",
   ];
 
-  final recentCities = ["Mumbai", "Delhi", "Pune", "Nashik"];
+  final recentCities = ["Potato Vada", "Pav Bhaji", "Pizza", "Burger"];
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -246,7 +237,7 @@ class RecipeSearch extends SearchDelegate<String> {
           onTap: () {
             showResults(context);
           },
-          leading: Icon(Icons.location_city),
+          leading: Icon(Icons.restaurant_menu),
           title: Text(suggestionList[index]),
         );
       },

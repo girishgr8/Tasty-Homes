@@ -9,7 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:supervisory/screens/AppIntro.dart';
 import 'package:supervisory/animations/FadeIn.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:supervisory/screens/RegisterScreen.dart';
+import 'package:supervisory/screens/Register.dart';
 
 class EntryScreen extends StatefulWidget {
   @override
@@ -88,6 +88,7 @@ class _EntryScreenState extends State<EntryScreen> {
                         radius: 60.0,
                         child: Container(
                           width: MediaQuery.of(context).size.width / 2,
+                          height: 80.0,
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: AssetImage("assets/images/logo.jpg"),

@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:supervisory/Recipe.dart';
-import 'package:supervisory/services/RecipeService.dart';
+import 'package:supervisory/helpers/classes/Recipe.dart';
+import 'package:supervisory/components/AppDrawer.dart';
+import 'package:supervisory/helpers/services/RecipeService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:supervisory/components/RecipeDetail.dart';
 
@@ -15,14 +16,14 @@ class MyRecipePage extends StatefulWidget {
 class _MyRecipePageState extends State<MyRecipePage> {
   bool recipeFlag = false;
   List<Recipe> recipes = [];
-  List<String> docID = [];
+  List<String> recipeIDs = [];
   @override
   void initState() {
     super.initState();
     RecipeService().getUserRecipes().then((QuerySnapshot queryDocs) {
       if (queryDocs.documents.isNotEmpty) {
         for (var r in queryDocs.documents) {
-          docID.add(r.documentID);
+          recipeIDs.add(r.documentID);
           recipes.add(Recipe(
             cookingMinutes: r.data['cookingMinutes'],
             cuisines: r.data['cuisines'],
@@ -257,9 +258,10 @@ class _MyRecipePageState extends State<MyRecipePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Recipes'),
+        title: Text('Saved Recipes'),
         centerTitle: true,
       ),
+      drawer: AppDrawer(firebaseUser: widget.firebaseUser),
       body: Container(
         // child: recipeFlag == true
         //     ? ListView.builder(
@@ -289,8 +291,10 @@ class _MyRecipePageState extends State<MyRecipePage> {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => RecipeDetail(
-                          firebaseUser: widget.firebaseUser,
-                          recipe: recipes[2]),
+                        firebaseUser: widget.firebaseUser,
+                        recipe: recipes[2],
+                        docID: recipeIDs[2],
+                      ),
                     ),
                   );
                 },

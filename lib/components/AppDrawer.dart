@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:supervisory/MyRecipe.dart';
+import 'package:supervisory/screens/Dashboard.dart';
+import 'package:supervisory/screens/SavedRecipes.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:supervisory/screens/EntryScreen.dart';
-import 'package:supervisory/profile.dart';
-import 'package:supervisory/recipe_single.dart';
+import 'package:supervisory/screens/Entry.dart';
+import 'package:supervisory/screens/Profile.dart';
+import 'package:supervisory/screens/Settings.dart';
 
 class AppDrawer extends StatefulWidget {
   AppDrawer({Key key, this.firebaseUser}) : super(key: key);
@@ -137,7 +138,24 @@ class _AppDrawerState extends State<AppDrawer> {
             ),
           ),
           ListTile(
-            title: Text('My Recipes'),
+            title: Text('Home'),
+            leading: Icon(
+              Icons.home,
+              size: 28,
+              color: Color.fromRGBO(28, 161, 239, 1),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      Dashboard(firebaseUser: widget.firebaseUser),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            title: Text('Saved Recipes'),
             leading: Icon(
               Icons.restaurant_menu,
               size: 28,
@@ -156,11 +174,10 @@ class _AppDrawerState extends State<AppDrawer> {
           ),
           ListTile(
             title: Text('Account'),
-            //subtitle: Text('Account Info'),
             leading: Icon(
               Icons.account_box,
               size: 28,
-              color: Colors.blueAccent[400],
+              color: Color.fromRGBO(28, 161, 239, 1),
             ),
             onTap: () {
               Navigator.push(
@@ -179,15 +196,7 @@ class _AppDrawerState extends State<AppDrawer> {
               size: 28,
               color: Colors.grey[700],
             ),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RecipeSinglePage(),
-                ),
-              );
-            },
+            onTap: () {},
           ),
           Divider(),
           ListTile(

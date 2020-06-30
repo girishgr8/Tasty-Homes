@@ -8,7 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:supervisory/screens/AppIntro.dart';
 import 'package:supervisory/animations/FadeIn.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:supervisory/screens/EntryScreen.dart';
+import 'package:supervisory/screens/Entry.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -86,6 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         radius: 60.0,
                         child: Container(
                           width: MediaQuery.of(context).size.width / 2,
+                          height: 80.0,
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: AssetImage("assets/images/logo.jpg"),

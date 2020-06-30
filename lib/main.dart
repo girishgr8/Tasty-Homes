@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:supervisory/screens/SplashScreen.dart';
+import 'package:supervisory/screens/Splash.dart';
 
 void main() => runApp(TastyHomes());
 

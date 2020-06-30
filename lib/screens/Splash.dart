@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supervisory/screens/Dashboard.dart';
-import 'package:supervisory/screens/EntryScreen.dart';
+import 'package:supervisory/screens/Entry.dart';
 import 'package:supervisory/animations/FadeIn.dart';
 
 class SplashScreen extends StatefulWidget {

@@ -3,17 +3,20 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:share/share.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:supervisory/Recipe.dart';
+import 'package:supervisory/helpers/classes/Recipe.dart';
 
 class RecipeDetail extends StatefulWidget {
-  RecipeDetail({Key key, this.firebaseUser, this.recipe}) : super(key: key);
+  RecipeDetail({Key key, this.firebaseUser, this.recipe, this.docID})
+      : super(key: key);
   final FirebaseUser firebaseUser;
   final Recipe recipe;
+  final String docID;
   @override
   _RecipeDetailState createState() => _RecipeDetailState();
 }
 
 class _RecipeDetailState extends State<RecipeDetail> {
+  bool liked = false, bookmarked = false;
   void share(BuildContext context) {
     final RenderBox box = context.findRenderObject();
 
@@ -66,20 +69,20 @@ class _RecipeDetailState extends State<RecipeDetail> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Color.fromRGBO(28, 161, 239, 1),
-        title: Text('Recipe Details'),
+        backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+          icon: Icon(
+            Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
+            color: Color.fromRGBO(28, 161, 239, 1),
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: <Widget>[
           FlatButton.icon(
-            textColor: Colors.white,
-            splashColor: Colors.blueAccent,
-            icon: Icon(Icons.play_circle_filled, color: Colors.white),
-            label: Text(
-              "Watch",
-            ),
+            icon: Icon(Icons.play_circle_filled,
+                color: Color.fromRGBO(28, 161, 239, 1)),
+            label: Text("Watch",
+                style: TextStyle(color: Color.fromRGBO(28, 161, 239, 1))),
             onPressed: () {},
           )
         ],
@@ -97,9 +100,66 @@ class _RecipeDetailState extends State<RecipeDetail> {
                         TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
                   ),
                 ),
-                SizedBox(height: 16.0),
+                SizedBox(height: 15.0),
                 Text(widget.recipe.summary),
-                SizedBox(height: 20.0),
+                SizedBox(height: 5.0),
+                Container(
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 5,
+                        child: Text(
+                          'Servings : ${widget.recipe.servings} persons',
+                          style: TextStyle(
+                            fontSize: 17.0,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: IconButton(
+                            tooltip:
+                                liked ? "Already Liked" : "Like the Recipe",
+                            icon: liked
+                                ? Icon(FontAwesomeIcons.solidHeart,
+                                    size: 20.0,
+                                    color: Color.fromRGBO(28, 161, 239, 1))
+                                : Icon(FontAwesomeIcons.heart, size: 20.0),
+                            onPressed: () {
+                              setState(() {
+                                liked = !liked;
+                              });
+                            }),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: IconButton(
+                            tooltip: bookmarked
+                                ? "Already Saved"
+                                : "Save the Recipe",
+                            icon: bookmarked
+                                ? Icon(Icons.bookmark,
+                                    color: Color.fromRGBO(28, 161, 239, 1))
+                                : Icon(Icons.bookmark_border),
+                            onPressed: () {
+                              setState(() {
+                                bookmarked = !bookmarked;
+                              });
+                            }),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: IconButton(
+                          tooltip: "Share",
+                          icon: Icon(Icons.share),
+                          onPressed: () => share(context),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 15.0),
                 Container(
                   height: 30,
                   child: Row(
@@ -209,55 +269,6 @@ class _RecipeDetailState extends State<RecipeDetail> {
                     );
                   }).toList(),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    FlatButton.icon(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0)),
-                      padding: EdgeInsets.symmetric(vertical: 2.0),
-                      color: Color.fromRGBO(28, 161, 239, 1),
-                      label: Text('Like',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16.0)),
-                      icon:
-                          Icon(Icons.thumb_up, size: 20.0, color: Colors.white),
-                      onPressed: () {},
-                    ),
-                    SizedBox(width: 15.0),
-                    FlatButton.icon(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0)),
-                      padding: EdgeInsets.symmetric(vertical: 2.0),
-                      color: Color.fromRGBO(28, 161, 239, 1),
-                      label: Text('Save',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16.0)),
-                      icon: Icon(Icons.bookmark_border,
-                          size: 22.0, color: Colors.white),
-                      onPressed: () {},
-                    ),
-                    SizedBox(width: 15.0),
-                    FlatButton.icon(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0)),
-                      padding: EdgeInsets.symmetric(vertical: 2.0),
-                      color: Color.fromRGBO(28, 161, 239, 1),
-                      label: Text('Share',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16.0)),
-                      icon: Icon(Icons.share, size: 20.0, color: Colors.white),
-                      onPressed: () => share(context),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),
@@ -326,32 +337,25 @@ class _RecipeDetailState extends State<RecipeDetail> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           insetAnimationDuration: Duration(seconds: 1),
-          child: Column(
-            children: <Widget>[
-              Container(
-                height: 345.0,
-                width: 200.0,
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      height: 345.0,
-                      width: 200.0,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(imageUrl),
-                        ),
-                      ),
+          child: Container(
+            height: 230.0,
+            width: 300.0,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  height: 200.0,
+                  width: 300.0,
+                  margin: EdgeInsets.all(15.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: NetworkImage(imageUrl),
                     ),
-                    SizedBox(height: 10.0),
-                    RaisedButton.icon(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(Icons.close),
-                      label: Text('Close'),
-                    )
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
