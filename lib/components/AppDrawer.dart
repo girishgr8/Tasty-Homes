@@ -196,7 +196,14 @@ class _AppDrawerState extends State<AppDrawer> {
               size: 28,
               color: Colors.grey[700],
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Settings(),
+                ),
+              );
+            },
           ),
           Divider(),
           ListTile(

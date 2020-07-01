@@ -48,56 +48,195 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
+  void addTags(List<Widget> inputChips, List<dynamic> list) {
+    for (int i = 0; i < list.length; i++) {
+      inputChips.add(
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 5.0),
+          child: InputChip(
+              avatar: Icon(
+                FontAwesomeIcons.tag,
+                size: 18.0,
+              ),
+              label: Text(list[i]),
+              onPressed: () {}),
+        ),
+      );
+    }
+  }
+
+  List<Widget> _buildTagList(Recipe recipe) {
+    List<Widget> inputChips = new List();
+    addTags(inputChips, recipe.diets);
+    addTags(inputChips, recipe.dishTypes);
+    addTags(inputChips, recipe.cuisines);
+    return inputChips;
+  }
+
+  Widget _buildCardList(int index) {
+    return Container(
+      child: Card(
+        elevation: 5.0,
+        margin: EdgeInsets.all(10.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4.0),
+            border:
+                Border.all(color: Color.fromRGBO(28, 161, 239, 1), width: 1.5),
+          ),
+          padding: EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 200.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3.0),
+                  image: DecorationImage(
+                    fit: BoxFit.fill,
+                    image: NetworkImage(recipes[index].imageUrl),
+                  ),
+                ),
+              ),
+              SizedBox(height: 5.0),
+              Container(
+                margin: EdgeInsets.all(5.0),
+                child: Center(
+                  child: Text(
+                    recipes[index].title,
+                    style: TextStyle(
+                      fontSize: 17.0,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromRGBO(28, 161, 239, 1),
+                      fontFamily: 'Montserrat',
+                    ),
+                  ),
+                ),
+              ),
+              Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
+              Container(
+                height: 30,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(FontAwesomeIcons.heart,
+                              size: 18.0,
+                              color: Color.fromRGBO(28, 161, 239, 1)),
+                          SizedBox(
+                            width: 8.0,
+                          ),
+                          Text(
+                            recipes[index].likes.toString(),
+                            style: TextStyle(fontSize: 17.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    VerticalDivider(),
+                    Expanded(
+                      flex: 2,
+                      child: recipes[index].vegetarian
+                          ? Text(
+                              "Vegetarian",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w600),
+                            )
+                          : Text(
+                              "Non-Vegetarian",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                    ),
+                    VerticalDivider(),
+                    Expanded(
+                      flex: 1,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(FontAwesomeIcons.fireAlt,
+                              size: 20.0, color: Colors.red),
+                          SizedBox(
+                            width: 5.0,
+                          ),
+                          Text(
+                            (recipes[index].preparationMinutes +
+                                        recipes[index].cookingMinutes)
+                                    .toString() +
+                                "m",
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(indent: 5.0, endIndent: 5.0),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
+                height: 50,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: _buildTagList(recipes[index]),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  RaisedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RecipeDetail(
+                            firebaseUser: widget.firebaseUser,
+                            docID: recipeIDs[index],
+                            recipe: recipes[index],
+                          ),
+                        ),
+                      );
+                    },
+                    color: Theme.of(context).accentColor,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 2.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            'View Details',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Icon(
+                            Icons.navigate_next,
+                            color: Colors.white,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildList() {
     return ListView.builder(
       itemCount: recipes.length,
       itemBuilder: (BuildContext context, int index) {
-        return ListTile(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RecipeDetail(
-                    firebaseUser: widget.firebaseUser,
-                    recipe: recipes[index],
-                    docID: recipeIDs[index],
-                  ),
-                ),
-              );
-            },
-            leading: Image(
-              image: NetworkImage(recipes[index].imageUrl),
-            ),
-            trailing: InkWell(
-              child: Icon(Icons.navigate_next, size: 30.0),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RecipeDetail(
-                        firebaseUser: widget.firebaseUser,
-                        recipe: recipes[index]),
-                  ),
-                );
-              },
-            ),
-            title: Text(recipes[index].title),
-            subtitle: Row(
-              children: <Widget>[
-                Icon(
-                  FontAwesomeIcons.solidCircle,
-                  size: 6.0,
-                  color: Colors.grey[400],
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 3.0),
-                ),
-                Text(
-                  '${recipes[index].preparationMinutes} mins preparation',
-                  style: TextStyle(fontSize: 12.0),
-                ),
-              ],
-            ));
+        return _buildCardList(index);
       },
     );
   }

@@ -63,6 +63,31 @@ class _RecipeDetailState extends State<RecipeDetail> {
     );
   }
 
+  void addTags(List<Widget> inputChips, List<dynamic> list) {
+    for (int i = 0; i < list.length; i++) {
+      inputChips.add(
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 5.0),
+          child: InputChip(
+              avatar: Icon(
+                FontAwesomeIcons.tag,
+                size: 18.0,
+              ),
+              label: Text(list[i]),
+              onPressed: () {}),
+        ),
+      );
+    }
+  }
+
+  List<Widget> _buildTagList(Recipe recipe) {
+    List<Widget> inputChips = new List();
+    addTags(inputChips, recipe.diets);
+    addTags(inputChips, recipe.dishTypes);
+    addTags(inputChips, recipe.cuisines);
+    return inputChips;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -205,7 +230,7 @@ class _RecipeDetailState extends State<RecipeDetail> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Icon(FontAwesomeIcons.fire,
+                            Icon(FontAwesomeIcons.fireAlt,
                                 size: 20.0, color: Colors.red),
                             SizedBox(
                               width: 10.0,
@@ -279,18 +304,7 @@ class _RecipeDetailState extends State<RecipeDetail> {
             child: ListView(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: 5.0),
-              children: widget.recipe.diets.map((label) {
-                return Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                  child: InputChip(
-                      avatar: Icon(
-                        FontAwesomeIcons.tag,
-                        size: 18.0,
-                      ),
-                      label: Text(label),
-                      onPressed: () {}),
-                );
-              }).toList(),
+              children: _buildTagList(widget.recipe),
             ),
           ),
           Material(
