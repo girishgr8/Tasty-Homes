@@ -8,6 +8,7 @@ import 'package:supervisory/screens/AppIntro.dart';
 import 'package:supervisory/animations/FadeIn.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:supervisory/screens/Register.dart';
+import 'package:supervisory/components/OrDivider.dart';
 
 class EntryScreen extends StatefulWidget {
   @override
@@ -34,6 +35,12 @@ class _EntryScreenState extends State<EntryScreen> {
 
     final AuthResult authResult = await _auth.signInWithCredential(credential);
     FirebaseUser user = authResult.user;
+
+    assert(!user.isAnonymous);
+    assert(await user.getIdToken() != null);
+    final FirebaseUser currentUser = await _auth.currentUser();
+    assert(user.uid == currentUser.uid);
+
     if (authResult.additionalUserInfo.isNewUser) {
       Firestore.instance.collection("users").document().setData({
         "name": user.displayName,
@@ -60,51 +67,39 @@ class _EntryScreenState extends State<EntryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Tasty Homes'),
-      //   centerTitle: true,
-      //   elevation: defaultTargetPlatform == TargetPlatform.android ? 5.0 : 0.0,
-      // ),
       body: SingleChildScrollView(
         child: Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
+                margin: EdgeInsets.only(top: 20.0),
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height / 3,
+                height: MediaQuery.of(context).size.height / 4,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(top: 20.0),
-                    ),
+                    Padding(padding: EdgeInsets.only(top: 10.0)),
                     FadeIn(
                       1.0,
-                      CircleAvatar(
-                        backgroundColor: Colors.white24,
-                        radius: 60.0,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          height: 80.0,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage("assets/images/logo.jpg"),
-                            ),
+                      Container(
+                        width: MediaQuery.of(context).size.width / 2,
+                        height: 70.0,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/logo.jpg"),
                           ),
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 10.0),
-                    ),
+                    Padding(padding: EdgeInsets.only(top: 10.0)),
                     FadeIn(
-                      1.3,
+                      1.1,
                       Text(
                         'Tasty Homes',
                         style: TextStyle(
                           color: Color.fromRGBO(28, 161, 239, 1),
-                          fontSize: 30.0,
+                          fontSize: 27.0,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -113,9 +108,9 @@ class _EntryScreenState extends State<EntryScreen> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(15.0),
+                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
                 child: FadeIn(
-                  1.5,
+                  1.2,
                   Form(
                     key: _formKey,
                     child: Column(
@@ -123,12 +118,16 @@ class _EntryScreenState extends State<EntryScreen> {
                       children: <Widget>[
                         TextFormField(
                           controller: email,
+                          textAlignVertical: TextAlignVertical.center,
+                          keyboardType: TextInputType.emailAddress,
                           toolbarOptions: ToolbarOptions(
                             copy: true,
                             selectAll: true,
                             paste: true,
                           ),
                           decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 14.0, horizontal: 5.0),
                             floatingLabelBehavior: FloatingLabelBehavior.auto,
                             labelText: 'Email',
                             prefixIcon: Icon(Icons.mail),
@@ -144,14 +143,15 @@ class _EntryScreenState extends State<EntryScreen> {
                             return null;
                           },
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10.0),
-                        ),
+                        Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
                         TextFormField(
                           controller: password,
+                          textAlignVertical: TextAlignVertical.center,
                           toolbarOptions:
                               ToolbarOptions(paste: false, copy: false),
                           decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 14.0, horizontal: 5.0),
                             floatingLabelBehavior: FloatingLabelBehavior.auto,
                             labelText: 'Password',
                             prefixIcon: Icon(Icons.lock),
@@ -244,29 +244,15 @@ class _EntryScreenState extends State<EntryScreen> {
                   ),
                 ),
               ),
-              FadeIn(
-                1.6,
-                Row(children: <Widget>[
-                  Expanded(
-                      child: Divider(
-                          indent: 18.0, endIndent: 8.0, thickness: 1.0)),
-                  Text(
-                    "OR",
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  Expanded(
-                      child: Divider(
-                          indent: 8.0, endIndent: 18.0, thickness: 1.0)),
-                ]),
-              ),
+              FadeIn(1.3, OrDivider()),
               SizedBox(height: 8.0),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    FadeIn(
-                      1.7,
+                padding: EdgeInsets.symmetric(horizontal: 25.0),
+                child: FadeIn(
+                  1.4,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
                       SignInButton(
                         Buttons.GoogleDark,
                         text: "Sign In with Google",
@@ -282,16 +268,13 @@ class _EntryScreenState extends State<EntryScreen> {
                           ).catchError((err) => print(err));
                         },
                       ),
-                    ),
-                    FadeIn(
-                      1.7,
                       SignInButton(
                         Buttons.Facebook,
                         text: "Sign In with Facebook",
                         onPressed: () {},
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],

@@ -8,6 +8,7 @@ import 'package:supervisory/screens/AppIntro.dart';
 import 'package:supervisory/animations/FadeIn.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:supervisory/screens/Entry.dart';
+import 'package:supervisory/components/OrDivider.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -21,44 +22,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final email = TextEditingController();
   final name = TextEditingController();
   final password = TextEditingController();
-  final confirmpassword = TextEditingController();
   final phone = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool isPasswordVisible = false;
-  bool isConfirmPasswordVisible = false;
 
-  Future<FirebaseUser> _signIn(BuildContext context) async {
-    GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    final AuthResult authResult = await _auth.signInWithCredential(credential);
-    FirebaseUser user = authResult.user;
-    if (authResult.additionalUserInfo.isNewUser) {
-      Firestore.instance.collection("users").document().setData({
-        "name": user.displayName,
-        "email": user.email,
-        "bio": "",
-        "joinDate": DateTime.now(),
-        "photo": user.photoUrl,
-        "phone": user.phoneNumber,
-        "saved": 0,
-      }).whenComplete(() {
-        print('New User ${user.displayName} added....!');
-
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (context) => ViewApp(firebaseUser: user),
-            ),
-            (Route<dynamic> route) => false);
-      });
-    }
-    print("Signed in, Username is: " + user.displayName);
-    return user;
+  Padding _formInputPadding() {
+    return Padding(padding: EdgeInsets.symmetric(vertical: 7.0));
   }
 
   @override
@@ -70,35 +39,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
+                margin: EdgeInsets.only(top: 15.0),
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height / 3,
+                height: MediaQuery.of(context).size.height / 4,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(top: 20.0),
-                    ),
+                    Padding(padding: EdgeInsets.only(top: 10.0)),
                     FadeIn(
                       1.0,
-                      CircleAvatar(
-                        backgroundColor: Colors.white24,
-                        radius: 60.0,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          height: 80.0,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage("assets/images/logo.jpg"),
-                            ),
+                      Container(
+                        width: MediaQuery.of(context).size.width / 2,
+                        height: 70.0,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/logo.jpg"),
                           ),
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 10.0),
-                    ),
+                    Padding(padding: EdgeInsets.only(top: 10.0)),
                     FadeIn(
-                      1.3,
+                      1.1,
                       Text(
                         'Tasty Homes',
                         style: TextStyle(
@@ -112,9 +74,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(15.0),
+                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 3.0),
                 child: FadeIn(
-                  1.5,
+                  1.1,
                   Form(
                     key: _formKey,
                     child: Column(
@@ -122,12 +84,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       children: <Widget>[
                         TextFormField(
                           controller: email,
+                          textAlignVertical: TextAlignVertical.center,
+                          keyboardType: TextInputType.emailAddress,
                           toolbarOptions: ToolbarOptions(
                             copy: true,
                             selectAll: true,
                             paste: true,
                           ),
                           decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 14.0, horizontal: 5.0),
                             floatingLabelBehavior: FloatingLabelBehavior.auto,
                             labelText: 'Email',
                             prefixIcon: Icon(Icons.mail),
@@ -143,9 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             return null;
                           },
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10.0),
-                        ),
+                        _formInputPadding(),
                         TextFormField(
                           controller: name,
                           toolbarOptions: ToolbarOptions(
@@ -153,7 +117,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             selectAll: true,
                             paste: true,
                           ),
+                          textAlignVertical: TextAlignVertical.center,
                           decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 14.0, horizontal: 5.0),
                             floatingLabelBehavior: FloatingLabelBehavior.auto,
                             labelText: 'Name',
                             prefixIcon: Icon(Icons.person),
@@ -167,14 +134,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             return null;
                           },
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10.0),
-                        ),
+                        _formInputPadding(),
                         TextFormField(
                           controller: password,
+                          textAlignVertical: TextAlignVertical.center,
                           toolbarOptions:
                               ToolbarOptions(paste: false, copy: false),
                           decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 14.0, horizontal: 5.0),
                             floatingLabelBehavior: FloatingLabelBehavior.auto,
                             labelText: 'Password',
                             prefixIcon: Icon(Icons.lock),
@@ -199,47 +167,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             return null;
                           },
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10.0),
-                        ),
-                        TextFormField(
-                          controller: confirmpassword,
-                          toolbarOptions:
-                              ToolbarOptions(paste: false, copy: false),
-                          decoration: InputDecoration(
-                            floatingLabelBehavior: FloatingLabelBehavior.auto,
-                            labelText: 'Confirm Password',
-                            prefixIcon: Icon(Icons.lock),
-                            suffixIcon: IconButton(
-                                icon: isConfirmPasswordVisible
-                                    ? Icon(Icons.visibility)
-                                    : Icon(Icons.visibility_off),
-                                onPressed: () {
-                                  setState(() {
-                                    isConfirmPasswordVisible =
-                                        !isConfirmPasswordVisible;
-                                  });
-                                }),
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(4.0)),
-                            ),
-                          ),
-                          obscureText: isConfirmPasswordVisible ? false : true,
-                          validator: (value) {
-                            if (value.isEmpty)
-                              return 'Please enter your password to confirm';
-                            if (value.toString() != password.value.toString())
-                              return "Passwords do not match";
-                            return null;
-                          },
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10.0),
-                        ),
+                        _formInputPadding(),
                         TextFormField(
                           controller: phone,
                           maxLength: 10,
+                          textAlignVertical: TextAlignVertical.center,
                           buildCounter: (BuildContext context,
                                   {int currentLength,
                                   int maxLength,
@@ -253,6 +185,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             paste: true,
                           ),
                           decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 14.0, horizontal: 5.0),
                             floatingLabelBehavior: FloatingLabelBehavior.auto,
                             labelText: 'Phone Number',
                             prefixIcon: Icon(Icons.phone),
@@ -267,7 +201,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 15.0),
+                        SizedBox(height: 10.0),
                         Container(
                           width: MediaQuery.of(context).size.width,
                           child: Padding(
@@ -320,54 +254,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
               ),
-              FadeIn(
-                1.6,
-                Row(children: <Widget>[
-                  Expanded(
-                      child: Divider(
-                          indent: 18.0, endIndent: 8.0, thickness: 1.0)),
-                  Text(
-                    "OR",
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  Expanded(
-                      child: Divider(
-                          indent: 8.0, endIndent: 18.0, thickness: 1.0)),
-                ]),
-              ),
-              SizedBox(height: 8.0),
+              FadeIn(1.3, OrDivider()),
+              SizedBox(height: 10.0),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    FadeIn(
-                      1.7,
+                padding: EdgeInsets.symmetric(horizontal: 25.0),
+                child: FadeIn(
+                  1.4,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
                       SignInButton(
                         Buttons.GoogleDark,
                         text: "Sign Up with Google",
-                        onPressed: () {
-                          _signIn(context).then(
-                            (FirebaseUser fireUser) {
-                              print('User ${fireUser.displayName} signed in');
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    Dashboard(firebaseUser: fireUser),
-                              ));
-                            },
-                          ).catchError((err) => print(err));
-                        },
+                        onPressed: () {},
                       ),
-                    ),
-                    FadeIn(
-                      1.7,
                       SignInButton(
                         Buttons.Facebook,
                         text: "Sign Up with Facebook",
                         onPressed: () {},
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],

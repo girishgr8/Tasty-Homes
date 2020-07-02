@@ -90,7 +90,7 @@ class _DashboardState extends State<Dashboard> {
             children: <Widget>[
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: 200.0,
+                height: 180.0,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(3.0),
                   image: DecorationImage(
