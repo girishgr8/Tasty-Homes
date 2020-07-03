@@ -9,20 +9,38 @@ import 'package:supervisory/animations/FadeIn.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:supervisory/screens/Register.dart';
 import 'package:supervisory/components/OrDivider.dart';
+import 'package:supervisory/auth/Auth.dart';
 
 class EntryScreen extends StatefulWidget {
+  EntryScreen({this.auth});
+  final Auth auth;
   @override
   _EntryScreenState createState() => _EntryScreenState();
 }
 
+enum AuthStatus { NOT_LOGIN, NOT_DETERMINED, LOGIN }
+
 class _EntryScreenState extends State<EntryScreen> {
+  AuthStatus _authStatus = AuthStatus.NOT_DETERMINED;
+  FirebaseUser _user;
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  final password = TextEditingController();
   final email = TextEditingController();
+  final password = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool isVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.auth.getCurrentUser().then((user) {
+      if (user != null) _user = user;
+
+      _authStatus = user?.uid == null ? AuthStatus.NOT_LOGIN : AuthStatus.LOGIN;
+    });
+  }
 
   Future<FirebaseUser> _signIn(BuildContext context) async {
     GoogleSignInAccount googleUser = await _googleSignIn.signIn();
@@ -64,8 +82,41 @@ class _EntryScreenState extends State<EntryScreen> {
     return user;
   }
 
+  Widget _showLoading() {
+    return Scaffold(
+      body: Container(
+        alignment: Alignment.center,
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  void _onSignedIn() {
+    widget.auth.getCurrentUser().then((user) {
+      setState(() {
+        _authStatus = AuthStatus.LOGIN;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    // switch (_authStatus) {
+    //   case AuthStatus.NOT_DETERMINED:
+    //     return _showLoading();
+    //   case AuthStatus.NOT_LOGIN:
+    //     return _showLogin();
+    //   case AuthStatus.LOGIN:
+    //     if (_user.uid.length > 0 && _user != null) {
+    //       return Dashboard(firebaseUser: _user);
+    //     } else {
+    //       return _showLoading();
+    //     }
+    //     break;
+    //   default:
+    //     return _showLoading();
+    //     break;
+    // }
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(

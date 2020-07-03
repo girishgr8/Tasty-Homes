@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:share/share.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supervisory/helpers/classes/Recipe.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 class RecipeDetail extends StatefulWidget {
   RecipeDetail({Key key, this.firebaseUser, this.recipe, this.docID})
@@ -16,7 +17,44 @@ class RecipeDetail extends StatefulWidget {
 }
 
 class _RecipeDetailState extends State<RecipeDetail> {
-  bool liked = false, bookmarked = false;
+  final FlutterTts _flutterTts = FlutterTts();
+  bool liked = false, bookmarked = false, isSpeaking = false;
+
+  Future _readRecipe(Recipe recipe) async {
+    await _flutterTts.setLanguage('en-IN');
+    String message = "";
+    int i;
+    message += "Recipe name is ${recipe.title}.${recipe.summary}.";
+
+    message +=
+        "Using given ingredients, it can serve upto: ${recipe.servings.toString()} persons and";
+
+    message += recipe.vegetarian
+        ? "it is a vegetarian dish."
+        : "it is a non-vegetarian dish.";
+
+    message += "${recipe.cookingMinutes} minutes are needed for cooking";
+
+    message += "Ingredients required are ";
+    for (i = 0; i < recipe.ingredients.length - 1; i++)
+      message += "${recipe.ingredients[i]}, ";
+    message += "${recipe.ingredients[i]}.";
+
+    message += "The procedure to prepare this delicious recipe is ";
+    for (i = 0; i < recipe.procedure.length - 1; i++)
+      message += "${recipe.procedure[i]}";
+    message += "${recipe.procedure[i]}.";
+
+    message += "This recipe can be used as: ";
+    for (i = 0; i < recipe.dishTypes.length - 1; i++)
+      message += "${recipe.dishTypes[i]} or ";
+    message += "${recipe.dishTypes[i]}.";
+    setState(() {
+      isSpeaking = !isSpeaking;
+    });
+    await _flutterTts.speak(message);
+  }
+
   void share(BuildContext context) {
     final RenderBox box = context.findRenderObject();
 
@@ -127,7 +165,21 @@ class _RecipeDetailState extends State<RecipeDetail> {
                 ),
                 SizedBox(height: 15.0),
                 Text(widget.recipe.summary),
-                SizedBox(height: 5.0),
+                isSpeaking
+                    ? FlatButton.icon(
+                        onPressed: () {
+                          _flutterTts.stop();
+                          setState(() {
+                            isSpeaking = !isSpeaking;
+                          });
+                        },
+                        label: Text("STOP"),
+                        icon: Icon(Icons.stop))
+                    : FlatButton.icon(
+                        onPressed: () => _readRecipe(widget.recipe),
+                        icon: Icon(Icons.volume_up),
+                        label: Text("READ RECIPE"),
+                      ),
                 Container(
                   child: Row(
                     children: <Widget>[

@@ -1,10 +1,4 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:supervisory/screens/Dashboard.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:supervisory/screens/AppIntro.dart';
 import 'package:supervisory/animations/FadeIn.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:supervisory/screens/Entry.dart';
@@ -16,9 +10,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
-
   final email = TextEditingController();
   final name = TextEditingController();
   final password = TextEditingController();

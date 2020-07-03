@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:supervisory/auth/Auth.dart';
 import 'package:supervisory/screens/Dashboard.dart';
 import 'package:supervisory/screens/Entry.dart';
 import 'package:supervisory/animations/FadeIn.dart';
@@ -31,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
           } else {
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
-                  builder: (context) => EntryScreen(),
+                  builder: (context) => EntryScreen(auth: Auth()),
                 ),
                 (Route<dynamic> route) => false);
           }
