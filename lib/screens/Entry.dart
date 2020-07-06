@@ -2,18 +2,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:supervisory/helpers/services/UserService.dart';
 import 'package:supervisory/screens/Dashboard.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:supervisory/screens/AppIntro.dart';
 import 'package:supervisory/animations/FadeIn.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:supervisory/screens/Register.dart';
 import 'package:supervisory/components/OrDivider.dart';
-import 'package:supervisory/auth/Auth.dart';
+// import 'package:supervisory/auth/Auth.dart';
 
 class EntryScreen extends StatefulWidget {
-  EntryScreen({this.auth});
-  final Auth auth;
+  // EntryScreen({this.auth});
+  // final Auth auth;
   @override
   _EntryScreenState createState() => _EntryScreenState();
 }
@@ -21,8 +21,8 @@ class EntryScreen extends StatefulWidget {
 enum AuthStatus { NOT_LOGIN, NOT_DETERMINED, LOGIN }
 
 class _EntryScreenState extends State<EntryScreen> {
-  AuthStatus _authStatus = AuthStatus.NOT_DETERMINED;
-  FirebaseUser _user;
+  // AuthStatus _authStatus = AuthStatus.NOT_DETERMINED;
+  // FirebaseUser _user;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -32,15 +32,15 @@ class _EntryScreenState extends State<EntryScreen> {
   final _formKey = GlobalKey<FormState>();
   bool isVisible = false;
 
-  @override
-  void initState() {
-    super.initState();
-    widget.auth.getCurrentUser().then((user) {
-      if (user != null) _user = user;
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   widget.auth.getCurrentUser().then((user) {
+  //     if (user != null) _user = user;
 
-      _authStatus = user?.uid == null ? AuthStatus.NOT_LOGIN : AuthStatus.LOGIN;
-    });
-  }
+  //     _authStatus = user?.uid == null ? AuthStatus.NOT_LOGIN : AuthStatus.LOGIN;
+  //   });
+  // }
 
   Future<FirebaseUser> _signIn(BuildContext context) async {
     GoogleSignInAccount googleUser = await _googleSignIn.signIn();
@@ -54,27 +54,17 @@ class _EntryScreenState extends State<EntryScreen> {
     final AuthResult authResult = await _auth.signInWithCredential(credential);
     FirebaseUser user = authResult.user;
 
-    assert(!user.isAnonymous);
-    assert(await user.getIdToken() != null);
-    final FirebaseUser currentUser = await _auth.currentUser();
-    assert(user.uid == currentUser.uid);
+    // assert(!user.isAnonymous);
+    // assert(await user.getIdToken() != null);
+    // final FirebaseUser currentUser = await _auth.currentUser();
+    // assert(user.uid == currentUser.uid);
 
     if (authResult.additionalUserInfo.isNewUser) {
-      Firestore.instance.collection("users").document().setData({
-        "name": user.displayName,
-        "email": user.email,
-        "bio": "",
-        "joinDate": DateTime.now(),
-        "photo": user.photoUrl,
-        "phone": user.phoneNumber,
-        "saved": 0,
-      }).whenComplete(() {
+      UserService().addUser(user).whenComplete(() {
         print('New User ${user.displayName} added....!');
-
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-              builder: (context) => ViewApp(firebaseUser: user),
-            ),
+                builder: (context) => AppIntro(firebaseUser: user)),
             (Route<dynamic> route) => false);
       });
     }
@@ -82,22 +72,22 @@ class _EntryScreenState extends State<EntryScreen> {
     return user;
   }
 
-  Widget _showLoading() {
-    return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
+  // Widget _showLoading() {
+  //   return Scaffold(
+  //     body: Container(
+  //       alignment: Alignment.center,
+  //       child: CircularProgressIndicator(),
+  //     ),
+  //   );
+  // }
 
-  void _onSignedIn() {
-    widget.auth.getCurrentUser().then((user) {
-      setState(() {
-        _authStatus = AuthStatus.LOGIN;
-      });
-    });
-  }
+  // void _onSignedIn() {
+  //   widget.auth.getCurrentUser().then((user) {
+  //     setState(() {
+  //       _authStatus = AuthStatus.LOGIN;
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {

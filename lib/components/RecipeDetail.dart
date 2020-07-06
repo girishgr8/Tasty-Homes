@@ -5,26 +5,43 @@ import 'package:share/share.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supervisory/helpers/classes/Recipe.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:supervisory/helpers/classes/User.dart';
+import 'package:supervisory/helpers/services/RecipeService.dart';
+import 'package:supervisory/helpers/services/UserService.dart';
 
 class RecipeDetail extends StatefulWidget {
-  RecipeDetail({Key key, this.firebaseUser, this.recipe, this.docID})
+  RecipeDetail(
+      {Key key,
+      this.firebaseUser,
+      this.recipe,
+      this.recipeDocId,
+      this.user,
+      this.userDocId})
       : super(key: key);
   final FirebaseUser firebaseUser;
   final Recipe recipe;
-  final String docID;
+  final String recipeDocId, userDocId;
+  final User user;
   @override
   _RecipeDetailState createState() => _RecipeDetailState();
 }
 
 class _RecipeDetailState extends State<RecipeDetail> {
   final FlutterTts _flutterTts = FlutterTts();
-  bool liked = false, bookmarked = false, isSpeaking = false;
+  bool isLiked = false, isBookmarked = false, isSpeaking = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.user.saved.contains(widget.recipeDocId)) isBookmarked = true;
+    if (widget.user.liked.contains(widget.recipeDocId)) isLiked = true;
+  }
 
   Future _readRecipe(Recipe recipe) async {
     await _flutterTts.setLanguage('en-IN');
     String message = "";
     int i;
-    message += "Recipe name is ${recipe.title}.${recipe.summary}.";
+    message += "Recipe name is ${recipe.title}.";
 
     message +=
         "Using given ingredients, it can serve upto: ${recipe.servings.toString()} persons and";
@@ -49,6 +66,7 @@ class _RecipeDetailState extends State<RecipeDetail> {
     for (i = 0; i < recipe.dishTypes.length - 1; i++)
       message += "${recipe.dishTypes[i]} or ";
     message += "${recipe.dishTypes[i]}.";
+    message += "${recipe.summary}";
     setState(() {
       isSpeaking = !isSpeaking;
     });
@@ -197,32 +215,50 @@ class _RecipeDetailState extends State<RecipeDetail> {
                         flex: 1,
                         child: IconButton(
                             tooltip:
-                                liked ? "Already Liked" : "Like the Recipe",
-                            icon: liked
+                                isLiked ? "Already Liked" : "Like the Recipe",
+                            icon: isLiked
                                 ? Icon(FontAwesomeIcons.solidHeart,
                                     size: 20.0,
                                     color: Color.fromRGBO(28, 161, 239, 1))
                                 : Icon(FontAwesomeIcons.heart, size: 20.0),
                             onPressed: () {
                               setState(() {
-                                liked = !liked;
+                                isLiked = true;
                               });
+                              List<dynamic> liked =
+                                  new List(widget.user.liked.length + 1);
+                              int i;
+                              for (i = 0; i < widget.user.liked.length; i++)
+                                liked[i] = widget.user.liked[i];
+                              liked[i] = widget.recipeDocId;
+                              UserService()
+                                  .addLikedRecipe(widget.userDocId, liked)
+                                  .whenComplete(() {});
                             }),
                       ),
                       Expanded(
                         flex: 1,
                         child: IconButton(
-                            tooltip: bookmarked
+                            tooltip: isBookmarked
                                 ? "Already Saved"
                                 : "Save the Recipe",
-                            icon: bookmarked
+                            icon: isBookmarked
                                 ? Icon(Icons.bookmark,
                                     color: Color.fromRGBO(28, 161, 239, 1))
                                 : Icon(Icons.bookmark_border),
                             onPressed: () {
                               setState(() {
-                                bookmarked = !bookmarked;
+                                isBookmarked = true;
                               });
+                              List<dynamic> saved =
+                                  new List(widget.user.saved.length + 1);
+                              int i;
+                              for (i = 0; i < widget.user.saved.length; i++)
+                                saved[i] = widget.user.saved[i];
+                              saved[i] = widget.recipeDocId;
+                              UserService()
+                                  .addSavedRecipe(widget.userDocId, saved)
+                                  .whenComplete(() {});
                             }),
                       ),
                       Expanded(

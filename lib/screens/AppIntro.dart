@@ -4,9 +4,9 @@ import 'package:flutter_walkthrough/walkthrough.dart';
 import 'package:flutter_walkthrough/flutter_walkthrough.dart';
 import 'package:supervisory/screens/Dashboard.dart';
 
-class ViewApp extends StatelessWidget {
+class AppIntro extends StatelessWidget {
   final FirebaseUser firebaseUser;
-  ViewApp({this.firebaseUser});
+  AppIntro({this.firebaseUser});
 
   final List<Walkthrough> list = [
     Walkthrough(

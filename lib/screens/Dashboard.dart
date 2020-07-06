@@ -5,7 +5,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supervisory/helpers/classes/Recipe.dart';
 import 'package:supervisory/components/AppDrawer.dart';
 import 'package:supervisory/components/RecipeDetail.dart';
+import 'package:supervisory/helpers/classes/User.dart';
 import 'package:supervisory/helpers/services/RecipeService.dart';
+import 'package:supervisory/helpers/services/UserService.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({Key key, this.firebaseUser}) : super(key: key);
@@ -15,15 +17,36 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  bool recipeFlag = false;
+  bool isRecipeDataAvailable = false, isUserDataAvailable = false;
   List<Recipe> recipes = [];
   List<String> recipeIDs = [];
+  String userDocId;
+  User user;
   @override
   void initState() {
     super.initState();
-    RecipeService().getUserRecipes().then((QuerySnapshot queryDocs) {
-      if (queryDocs.documents.isNotEmpty) {
-        for (var r in queryDocs.documents) {
+    UserService()
+        .getUserData(widget.firebaseUser)
+        .listen((QuerySnapshot snapshot) {
+      if (snapshot.documents.isNotEmpty) {
+        userDocId = snapshot.documents[0].documentID;
+        var data = snapshot.documents[0].data;
+        user = User(
+          email: data['email'],
+          name: data['name'],
+          phone: data['phone'],
+          photo: data['photo'],
+          saved: data['saved'],
+          liked: data['liked'],
+          uid: data['uid'],
+          joinedDate: data['joinedDate'],
+        );
+      }
+    });
+
+    RecipeService().getRecipes().listen((QuerySnapshot snapshot) {
+      if (snapshot.documents.isNotEmpty) {
+        for (var r in snapshot.documents) {
           recipeIDs.add(r.documentID);
           recipes.add(Recipe(
             cookingMinutes: r.data['cookingMinutes'],
@@ -43,7 +66,7 @@ class _DashboardState extends State<Dashboard> {
         }
       }
       setState(() {
-        recipeFlag = true;
+        isRecipeDataAvailable = true;
       });
     });
   }
@@ -198,8 +221,10 @@ class _DashboardState extends State<Dashboard> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => RecipeDetail(
+                            user: user,
+                            userDocId: userDocId,
                             firebaseUser: widget.firebaseUser,
-                            docID: recipeIDs[index],
+                            recipeDocId: recipeIDs[index],
                             recipe: recipes[index],
                           ),
                         ),
@@ -258,7 +283,7 @@ class _DashboardState extends State<Dashboard> {
         ],
       ),
       body: Container(
-        child: recipeFlag == true
+        child: isRecipeDataAvailable
             ? _buildList()
             : Center(
                 child: Container(
