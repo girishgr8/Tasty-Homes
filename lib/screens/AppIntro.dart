@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // import 'package:introduction_screen/introduction_screen.dart';
 import 'package:supervisory/screens/Dashboard.dart';
-import 'package:supervisory/screens/Profile.dart';
 
 class AppIntro extends StatelessWidget {
   final User firebaseUser;

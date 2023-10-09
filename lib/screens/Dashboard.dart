@@ -7,7 +7,6 @@ import 'package:supervisory/components/AppDrawer.dart';
 import 'package:supervisory/components/RecipeDetail.dart';
 import 'package:supervisory/helpers/classes/AppUser.dart';
 import 'package:supervisory/helpers/services/RecipeService.dart';
-import 'package:supervisory/helpers/services/UserService.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({Key? key, required this.firebaseUser, this.appUser}) : super(key: key);
