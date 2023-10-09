@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supervisory/screens/Dashboard.dart';
 import 'package:supervisory/screens/Entry.dart';
-import 'package:supervisory/animations/FadeIn.dart';
+// import 'package:supervisory/animations/FadeIn.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -19,13 +19,13 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Timer(
-      Duration(seconds: 5),
+      Duration(seconds: 3),
       () {
-        _auth.currentUser().then((FirebaseUser firebaseUser) {
+          User? firebaseUser = _auth.currentUser;
           if (firebaseUser != null) {
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
-                  builder: (context) => Dashboard(firebaseUser: firebaseUser),
+                  builder: (context) => Dashboard(key: null, firebaseUser: firebaseUser),
                 ),
                 (Route<dynamic> route) => false);
           } else {
@@ -35,7 +35,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
                 (Route<dynamic> route) => false);
           }
-        }).catchError((err) => print(err));
       },
     );
   }
@@ -58,8 +57,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      FadeIn(
-                        1.0,
+                      // FadeIn(
+                      //   1.0,
                         CircleAvatar(
                           backgroundColor: Colors.white,
                           radius: 50.0,
@@ -69,12 +68,12 @@ class _SplashScreenState extends State<SplashScreen> {
                             size: 50.0,
                           ),
                         ),
-                      ),
+                      // ),
                       Padding(
                         padding: EdgeInsets.only(top: 10.0),
                       ),
-                      FadeIn(
-                        1.3,
+                      // FadeIn(
+                      //   1.3,
                         Text(
                           'Tasty Homes',
                           style: TextStyle(
@@ -83,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
+                      // ),
                     ],
                   ),
                 ),
@@ -97,8 +96,8 @@ class _SplashScreenState extends State<SplashScreen> {
                     Padding(
                       padding: EdgeInsets.only(top: 20.0),
                     ),
-                    FadeIn(
-                      1.4,
+                    // FadeIn(
+                    //   1.4,
                       Text(
                         'Online Recipe Book',
                         style: TextStyle(
@@ -107,9 +106,9 @@ class _SplashScreenState extends State<SplashScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    FadeIn(
-                      1.6,
+                    // ),
+                    // FadeIn(
+                    //   1.6,
                       Text(
                         'For Everyone',
                         style: TextStyle(
@@ -118,7 +117,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
+                    // ),
                   ],
                 ),
               )

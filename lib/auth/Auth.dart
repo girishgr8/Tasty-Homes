@@ -5,7 +5,7 @@ abstract class BaseAuth {
 
   Future<String> signUp(String email, String password);
 
-  Future<FirebaseUser> getCurrentUser();
+  Future<User> getCurrentUser();
 
   Future<void> sendEmailVerification();
 
@@ -17,27 +17,27 @@ abstract class BaseAuth {
 class Auth implements BaseAuth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  Future<FirebaseUser> getCurrentUser() async {
-    return await _firebaseAuth.currentUser();
+  Future<User> getCurrentUser() async {
+    return _firebaseAuth.currentUser!;
   }
 
   Future<void> sendEmailVerification() async {
-    FirebaseUser user = await _firebaseAuth.currentUser();
-    user.sendEmailVerification();
+    User firebaseUser = _firebaseAuth.currentUser!;
+    firebaseUser.sendEmailVerification();
   }
 
   Future<String> signIn(String email, String password) async {
-    AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
+    UserCredential result = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
-    FirebaseUser user = result.user;
-    return user.uid;
+    User firebaseUser = result.user!;
+    return firebaseUser.uid;
   }
 
   Future<String> signUp(String email, String password) async {
-    AuthResult result = await _firebaseAuth.createUserWithEmailAndPassword(
+    UserCredential result = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
-    FirebaseUser user = result.user;
-    return user.uid;
+    User firebaseUser = result.user!;
+    return firebaseUser.uid;
   }
 
   Future<void> signOut() async {
@@ -45,7 +45,7 @@ class Auth implements BaseAuth {
   }
 
   Future<bool> isEmailVerified() async {
-    FirebaseUser user = await _firebaseAuth.currentUser();
-    return user.isEmailVerified;
+    User firebaseUser = _firebaseAuth.currentUser!;
+    return firebaseUser.emailVerified;
   }
 }

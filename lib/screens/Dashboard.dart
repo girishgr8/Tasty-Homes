@@ -5,13 +5,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supervisory/helpers/classes/Recipe.dart';
 import 'package:supervisory/components/AppDrawer.dart';
 import 'package:supervisory/components/RecipeDetail.dart';
-import 'package:supervisory/helpers/classes/User.dart';
+import 'package:supervisory/helpers/classes/AppUser.dart';
 import 'package:supervisory/helpers/services/RecipeService.dart';
 import 'package:supervisory/helpers/services/UserService.dart';
 
 class Dashboard extends StatefulWidget {
-  Dashboard({Key key, this.firebaseUser}) : super(key: key);
-  final FirebaseUser firebaseUser;
+  Dashboard({Key? key, required this.firebaseUser, this.appUser}) : super(key: key);
+  final User firebaseUser;
+  final AppUser? appUser;
   @override
   _DashboardState createState() => _DashboardState();
 }
@@ -20,48 +21,61 @@ class _DashboardState extends State<Dashboard> {
   bool isRecipeDataAvailable = false, isUserDataAvailable = false;
   List<Recipe> recipes = [];
   List<String> recipeIDs = [];
-  String userDocId;
-  User user;
+  String userDocId = "";
+  AppUser? appUser;
   @override
   void initState() {
     super.initState();
-    UserService()
-        .getUserData(widget.firebaseUser)
-        .listen((QuerySnapshot snapshot) {
-      if (snapshot.documents.isNotEmpty) {
-        userDocId = snapshot.documents[0].documentID;
-        var data = snapshot.documents[0].data;
-        user = User(
-          email: data['email'],
-          name: data['name'],
-          phone: data['phone'],
-          photo: data['photo'],
-          saved: data['saved'],
-          liked: data['liked'],
-          uid: data['uid'],
-          joinedDate: data['joinedDate'],
-        );
-      }
-    });
+    // UserService()
+    //     .getUserData(widget.firebaseUser).then((obj) => {
+    //         // var dataObj = ;
+    //         this.appUser = AppUser(
+    //           email: obj.docs[0]['email'],
+    //           name: obj.docs[0]['name'],
+    //           phone: obj.docs[0]['phone'],
+    //           photo: obj.docs[0]['photo'],
+    //           saved: obj.docs[0]['saved'],
+    //           liked: obj.docs[0]['liked'],
+    //           uid: obj.docs[0]['uid'],
+    //           joinedDate: obj.docs[0]['joinedDate'],
+    //       )
+    //     });
+        // .listen((QuerySnapshot snapshot) {
+      // if (snapshot.docs.isNotEmpty) {
+      //   userDocId = snapshot.docs[0].id;
+      //   var data = snapshot.docs[0];
+      //   this.appUser = AppUser(
+      //     email: data['email'],
+      //     name: data['name'],
+      //     phone: data['phone'],
+      //     photo: data['photo'],
+      //     saved: data['saved'],
+      //     liked: data['liked'],
+      //     uid: data['uid'],
+      //     joinedDate: data['joinedDate'],
+      //   );
+      // }
+    // });
 
     RecipeService().getRecipes().listen((QuerySnapshot snapshot) {
-      if (snapshot.documents.isNotEmpty) {
-        for (var r in snapshot.documents) {
-          recipeIDs.add(r.documentID);
+      if (snapshot.docs.isNotEmpty) {
+        for (var r in snapshot.docs) {
+
+          recipeIDs.add(r.id);
           recipes.add(Recipe(
-            cookingMinutes: r.data['cookingMinutes'],
-            cuisines: r.data['cuisines'],
-            diets: r.data['diets'],
-            dishTypes: r.data['dishTypes'],
-            imageUrl: r.data['imageUrl'],
-            ingredients: r.data['ingredients'],
-            likes: r.data['likes'],
-            preparationMinutes: r.data['preparationMinutes'],
-            procedure: r.data['procedure'],
-            servings: r.data['servings'],
-            summary: r.data['summary'],
-            title: r.data['title'],
-            vegetarian: r.data['vegetarian'],
+            cookingMinutes: r['cookingMinutes'],
+            cuisines: r['cuisines'],
+            diets: r['diets'],
+            dishTypes: r['dishTypes'],
+            imageUrl: r['imageUrl'],
+            ingredients: r['ingredients'],
+            likes: r['likes'],
+            preparationMinutes: r['preparationMinutes'],
+            procedure: r['procedure'],
+            servings: r['servings'],
+            summary: r['summary'],
+            title: r['title'],
+            vegetarian: r['vegetarian'],
           ));
         }
       }
@@ -89,7 +103,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   List<Widget> _buildTagList(Recipe recipe) {
-    List<Widget> inputChips = new List();
+    List<Widget> inputChips = new List<Widget>.empty(growable: true);
     addTags(inputChips, recipe.diets);
     addTags(inputChips, recipe.dishTypes);
     addTags(inputChips, recipe.cuisines);
@@ -215,13 +229,13 @@ class _DashboardState extends State<Dashboard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  RaisedButton(
+                  ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => RecipeDetail(
-                            user: user,
+                            appUser: widget.appUser!,
                             userDocId: userDocId,
                             firebaseUser: widget.firebaseUser,
                             recipeDocId: recipeIDs[index],
@@ -230,7 +244,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       );
                     },
-                    color: Theme.of(context).accentColor,
+                    // color: Theme.of(context).accentColor,
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 2.0),
                       child: Row(
@@ -298,7 +312,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
       ),
-      drawer: AppDrawer(firebaseUser: widget.firebaseUser),
+      drawer: AppDrawer(appUser: widget.appUser, firebaseUser: widget.firebaseUser),
       // bottomNavigationBar: BottomNavigationBar(
       //   items: [
       //     BottomNavigationBarItem(
@@ -372,7 +386,7 @@ class RecipeSearch extends SearchDelegate<String> {
         progress: transitionAnimation,
       ),
       onPressed: () {
-        close(context, null);
+        close(context, "");
       },
     );
   }

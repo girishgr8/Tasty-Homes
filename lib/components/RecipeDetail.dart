@@ -1,27 +1,26 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supervisory/helpers/classes/Recipe.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:supervisory/helpers/classes/User.dart';
-import 'package:supervisory/helpers/services/RecipeService.dart';
+import 'package:supervisory/helpers/classes/AppUser.dart';
 import 'package:supervisory/helpers/services/UserService.dart';
 
 class RecipeDetail extends StatefulWidget {
   RecipeDetail(
-      {Key key,
-      this.firebaseUser,
-      this.recipe,
-      this.recipeDocId,
-      this.user,
-      this.userDocId})
+      {Key? key,
+      required this.firebaseUser,
+      required this.recipe,
+      required this.recipeDocId,
+      this.appUser,
+      required this.userDocId})
       : super(key: key);
-  final FirebaseUser firebaseUser;
+  final User firebaseUser;
   final Recipe recipe;
   final String recipeDocId, userDocId;
-  final User user;
+  final AppUser? appUser;
   @override
   _RecipeDetailState createState() => _RecipeDetailState();
 }
@@ -33,8 +32,8 @@ class _RecipeDetailState extends State<RecipeDetail> {
   @override
   void initState() {
     super.initState();
-    if (widget.user.saved.contains(widget.recipeDocId)) isBookmarked = true;
-    if (widget.user.liked.contains(widget.recipeDocId)) isLiked = true;
+    if (widget.appUser!.saved.contains(widget.recipeDocId)) isBookmarked = true;
+    if (widget.appUser!.liked.contains(widget.recipeDocId)) isLiked = true;
   }
 
   Future _readRecipe(Recipe recipe) async {
@@ -74,7 +73,7 @@ class _RecipeDetailState extends State<RecipeDetail> {
   }
 
   void share(BuildContext context) {
-    final RenderBox box = context.findRenderObject();
+    final RenderBox box = context.findRenderObject() as RenderBox;
 
     Share.share(widget.recipe.title,
         subject: widget.recipe.title,
@@ -137,7 +136,7 @@ class _RecipeDetailState extends State<RecipeDetail> {
   }
 
   List<Widget> _buildTagList(Recipe recipe) {
-    List<Widget> inputChips = new List();
+    List<Widget> inputChips = new List<Widget>.empty(growable: true);
     addTags(inputChips, recipe.diets);
     addTags(inputChips, recipe.dishTypes);
     addTags(inputChips, recipe.cuisines);
@@ -159,7 +158,7 @@ class _RecipeDetailState extends State<RecipeDetail> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: <Widget>[
-          FlatButton.icon(
+          TextButton.icon(
             icon: Icon(Icons.play_circle_filled,
                 color: Color.fromRGBO(28, 161, 239, 1)),
             label: Text("Watch",
@@ -184,7 +183,7 @@ class _RecipeDetailState extends State<RecipeDetail> {
                 SizedBox(height: 15.0),
                 Text(widget.recipe.summary),
                 isSpeaking
-                    ? FlatButton.icon(
+                    ? TextButton.icon(
                         onPressed: () {
                           _flutterTts.stop();
                           setState(() {
@@ -193,7 +192,7 @@ class _RecipeDetailState extends State<RecipeDetail> {
                         },
                         label: Text("STOP"),
                         icon: Icon(Icons.stop))
-                    : FlatButton.icon(
+                    : TextButton.icon(
                         onPressed: () => _readRecipe(widget.recipe),
                         icon: Icon(Icons.volume_up),
                         label: Text("READ RECIPE"),
@@ -226,10 +225,10 @@ class _RecipeDetailState extends State<RecipeDetail> {
                                 isLiked = true;
                               });
                               List<dynamic> liked =
-                                  new List(widget.user.liked.length + 1);
+                                  new List.empty(growable: true);
                               int i;
-                              for (i = 0; i < widget.user.liked.length; i++)
-                                liked[i] = widget.user.liked[i];
+                              for (i = 0; i < widget.appUser!.liked.length; i++)
+                                liked[i] = widget.appUser!.liked[i];
                               liked[i] = widget.recipeDocId;
                               UserService()
                                   .addLikedRecipe(widget.userDocId, liked)
@@ -251,10 +250,10 @@ class _RecipeDetailState extends State<RecipeDetail> {
                                 isBookmarked = true;
                               });
                               List<dynamic> saved =
-                                  new List(widget.user.saved.length + 1);
+                                  new List<dynamic>.empty(growable: true);
                               int i;
-                              for (i = 0; i < widget.user.saved.length; i++)
-                                saved[i] = widget.user.saved[i];
+                              for (i = 0; i < widget.appUser!.saved.length; i++)
+                                saved[i] = widget.appUser!.saved[i];
                               saved[i] = widget.recipeDocId;
                               UserService()
                                   .addSavedRecipe(widget.userDocId, saved)
@@ -430,7 +429,7 @@ class _RecipeDetailState extends State<RecipeDetail> {
     );
   }
 
-  Future<bool> _showImageDialog(String imageUrl) {
+  Future<dynamic> _showImageDialog(String imageUrl) {
     return showDialog(
       context: context,
       barrierDismissible: true,
@@ -478,7 +477,7 @@ class _RecipeDetailState extends State<RecipeDetail> {
     );
   }
 
-  Widget _buildStep({int idx, String title, String content}) {
+  Widget _buildStep({required int idx, required String title, required String content}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[

@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // class Profile extends StatefulWidget {
 //   Profile({Key key, this.firebaseUser}) : super(key: key);
-//   final FirebaseUser firebaseUser;
+//   final User firebaseUser;
 //   @override
 //   _ProfileState createState() => _ProfileState();
 // }
@@ -19,10 +19,10 @@ import 'package:url_launcher/url_launcher.dart';
 //   @override
 //   void initState() {
 //     super.initState();
-//     Firestore.instance
+//     FirebaseFirestore.instance
 //         .collection('users')
 //         .where('email', isEqualTo: widget.firebaseUser.email)
-//         .getDocuments()
+//         .get()
 //         .then((QuerySnapshot queryDocs) {
 //       if (queryDocs.documents.isNotEmpty) {
 //         var data = queryDocs.documents[0].data;
@@ -410,8 +410,8 @@ import 'package:url_launcher/url_launcher.dart';
 // }
 
 class Profile extends StatefulWidget {
-  Profile({Key key, this.firebaseUser}) : super(key: key);
-  final FirebaseUser firebaseUser;
+  Profile({Key? key, required this.firebaseUser}) : super(key: key);
+  final User firebaseUser;
   @override
   _ProfileState createState() => _ProfileState();
 }
@@ -433,45 +433,45 @@ class _ProfileState extends State<Profile> {
   // }
 
   _openURL() async {
-    const url = 'https://flutter.io';
-    if (await canLaunch(url)) {
-      await launch(url);
+    var url = Uri.parse('https://flutter.io');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
     } else {
       throw 'Could not launch $url';
     }
   }
 
   _linkedinURL(String $profileName) async {
-    var url = 'https://linkedin.com/' + $profileName;
-    if (await canLaunch(url)) {
-      await launch(url);
+    var url = Uri.parse('https://linkedin.com/' + $profileName);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
     } else {
       throw 'Could not launch $url';
     }
   }
 
   _twitterURL(String $profileName) async {
-    var url = 'https://twitter.com/' + $profileName;
-    if (await canLaunch(url)) {
-      await launch(url);
+    var url = Uri.parse('https://twitter.com/' + $profileName);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
     } else {
       throw 'Could not launch $url';
     }
   }
 
   _facebookURL(String $profileName) async {
-    var url = 'https://facebook.com/' + $profileName;
-    if (await canLaunch(url)) {
-      await launch(url);
+    var url = Uri.parse('https://facebook.com/' + $profileName);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
     } else {
       throw 'Could not launch $url';
     }
   }
 
   _youtubeURL(String $profileName) async {
-    var url = 'https://youtube.com/' + $profileName;
-    if (await canLaunch(url)) {
-      await launch(url);
+    var url = Uri.parse('https://youtube.com/' + $profileName);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
     } else {
       throw 'Could not launch $url';
     }
@@ -732,8 +732,8 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
 }
 
 class ProfileImageWidget extends StatefulWidget {
-  ProfileImageWidget({Key key, this.firebaseUser}) : super(key: key);
-  final FirebaseUser firebaseUser;
+  ProfileImageWidget({Key? key, required this.firebaseUser}) : super(key: key);
+  final User firebaseUser;
   @override
   _ProfileImageWidgetState createState() => _ProfileImageWidgetState();
 }
@@ -766,7 +766,7 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
             shape: shape,
             image: new DecorationImage(
               fit: BoxFit.fill,
-              image: new NetworkImage(widget.firebaseUser.photoUrl),
+              image: new NetworkImage(widget.firebaseUser.photoURL.toString()),
             ),
           ),
         ),

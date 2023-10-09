@@ -37,8 +37,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Padding(padding: EdgeInsets.only(top: 10.0)),
-                    FadeIn(
-                      1.0,
+                    // FadeIn(
+                    //   1.0,
                       Container(
                         width: MediaQuery.of(context).size.width / 2,
                         height: 70.0,
@@ -48,10 +48,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                       ),
-                    ),
+                    // ),
                     Padding(padding: EdgeInsets.only(top: 10.0)),
-                    FadeIn(
-                      1.1,
+                    // FadeIn(
+                    //   1.1,
                       Text(
                         'Tasty Homes',
                         style: TextStyle(
@@ -60,14 +60,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
+                    // ),
                   ],
                 ),
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 3.0),
-                child: FadeIn(
-                  1.1,
+                child: 
+                // FadeIn(
+                //   1.1,
                   Form(
                     key: _formKey,
                     child: Column(
@@ -77,11 +78,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: email,
                           textAlignVertical: TextAlignVertical.center,
                           keyboardType: TextInputType.emailAddress,
-                          toolbarOptions: ToolbarOptions(
-                            copy: true,
-                            selectAll: true,
-                            paste: true,
-                          ),
+                          // toolbarOptions: ToolbarOptions(
+                          //   copy: true,
+                          //   selectAll: true,
+                          //   paste: true,
+                          // ),
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 14.0, horizontal: 5.0),
@@ -94,7 +95,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value!.isEmpty) {
                               return 'Please enter your email address';
                             }
                             return null;
@@ -103,11 +104,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         _formInputPadding(),
                         TextFormField(
                           controller: name,
-                          toolbarOptions: ToolbarOptions(
-                            copy: true,
-                            selectAll: true,
-                            paste: true,
-                          ),
+                          // toolbarOptions: ToolbarOptions(
+                          //   copy: true,
+                          //   selectAll: true,
+                          //   paste: true,
+                          // ),
                           textAlignVertical: TextAlignVertical.center,
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
@@ -121,7 +122,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           validator: (value) {
-                            if (value.isEmpty) return 'Please enter your name';
+                            if (value!.isEmpty) return 'Please enter your name';
                             return null;
                           },
                         ),
@@ -129,8 +130,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         TextFormField(
                           controller: password,
                           textAlignVertical: TextAlignVertical.center,
-                          toolbarOptions:
-                              ToolbarOptions(paste: false, copy: false),
+                          // toolbarOptions:
+                          //     ToolbarOptions(paste: false, copy: false),
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 14.0, horizontal: 5.0),
@@ -153,7 +154,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           obscureText: isPasswordVisible ? false : true,
                           validator: (value) {
-                            if (value.isEmpty)
+                            if (value!.isEmpty)
                               return 'Please enter your password';
                             return null;
                           },
@@ -163,18 +164,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: phone,
                           maxLength: 10,
                           textAlignVertical: TextAlignVertical.center,
-                          buildCounter: (BuildContext context,
-                                  {int currentLength,
-                                  int maxLength,
-                                  bool isFocused}) =>
-                              null,
+                          // buildCounter : (BuildContext context,
+                          //         {int currentLength,
+                          //         int maxLength,
+                          //         bool isFocused}) =>
+                          //     null,
                           keyboardType:
                               TextInputType.numberWithOptions(decimal: false),
-                          toolbarOptions: ToolbarOptions(
-                            copy: true,
-                            selectAll: true,
-                            paste: true,
-                          ),
+                          // toolbarOptions: ToolbarOptions(
+                          //   copy: true,
+                          //   selectAll: true,
+                          //   paste: true,
+                          // ),
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 14.0, horizontal: 5.0),
@@ -187,7 +188,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           validator: (value) {
-                            if (value.isEmpty)
+                            if (value!.isEmpty)
                               return 'Please enter phone number';
                             return null;
                           },
@@ -197,10 +198,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           width: MediaQuery.of(context).size.width,
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 10.0),
-                            child: RaisedButton(
-                              color: Color.fromRGBO(28, 161, 239, 1),
+                            child: ElevatedButton(
+                              // color: Color.fromRGBO(28, 161, 239, 1),
                               onPressed: () {
-                                if (_formKey.currentState.validate()) {}
+                                if (_formKey.currentState!.validate()) {}
                               },
                               child: Text(
                                 "REGISTER",
@@ -243,14 +244,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ],
                     ),
                   ),
-                ),
+                // ),
               ),
-              FadeIn(1.3, OrDivider()),
+              // FadeIn(1.3, 
+              OrDivider(),
+              // ),
               SizedBox(height: 10.0),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25.0),
-                child: FadeIn(
-                  1.4,
+                child: 
+                // FadeIn(
+                //   1.4,
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
@@ -267,7 +271,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ],
                   ),
                 ),
-              ),
+              // ),
             ],
           ),
         ),

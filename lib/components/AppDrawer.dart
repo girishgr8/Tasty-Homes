@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supervisory/helpers/classes/AppUser.dart';
 import 'package:supervisory/screens/Dashboard.dart';
+import 'package:supervisory/screens/Entry.dart';
 import 'package:supervisory/screens/SavedRecipes.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:supervisory/screens/Entry.dart';
 import 'package:supervisory/screens/Profile.dart';
 import 'package:supervisory/screens/Settings.dart';
 
 class AppDrawer extends StatefulWidget {
-  AppDrawer({Key key, this.firebaseUser}) : super(key: key);
-  final FirebaseUser firebaseUser;
+  AppDrawer({Key? key, this.appUser, required this.firebaseUser}) : super(key: key);
+  final User firebaseUser;
+  final AppUser? appUser;
   @override
   _AppDrawerState createState() => _AppDrawerState();
 }
@@ -64,7 +66,7 @@ class _AppDrawerState extends State<AppDrawer> {
                               width: 3.0,
                             ),
                             image: DecorationImage(
-                              image: NetworkImage(widget.firebaseUser.photoUrl),
+                              image: NetworkImage(widget.firebaseUser.photoURL.toString()),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -86,8 +88,11 @@ class _AppDrawerState extends State<AppDrawer> {
                   ),
                   SizedBox(height: 10.0),
                   Divider(),
-                  FlatButton(
-                    padding: EdgeInsets.all(5.0),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.all(5.0)
+                    ),
+                    
                     child: Center(
                       child: Text(
                         'Logout',
@@ -109,8 +114,8 @@ class _AppDrawerState extends State<AppDrawer> {
                     },
                   ),
                   Divider(),
-                  FlatButton(
-                    padding: EdgeInsets.symmetric(vertical: 0.0),
+                  TextButton(
+                    // padding: EdgeInsets.symmetric(vertical: 0.0),
                     child: Center(
                       child: Text('Cancel'),
                     ),
@@ -122,7 +127,7 @@ class _AppDrawerState extends State<AppDrawer> {
               ),
             ),
           );
-        });
+  }).then((value) => value ?? false);
   }
 
   @override
@@ -131,10 +136,10 @@ class _AppDrawerState extends State<AppDrawer> {
       child: ListView(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: Text(widget.firebaseUser.displayName),
-            accountEmail: Text(widget.firebaseUser.email),
+            accountName: Text(widget.firebaseUser.displayName.toString()),
+            accountEmail: Text(widget.firebaseUser.email.toString()),
             currentAccountPicture: CircleAvatar(
-              backgroundImage: NetworkImage(widget.firebaseUser.photoUrl),
+              backgroundImage: NetworkImage(widget.firebaseUser.photoURL.toString()),
             ),
           ),
           ListTile(
@@ -149,7 +154,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      Dashboard(firebaseUser: widget.firebaseUser),
+                      Dashboard(appUser: null, firebaseUser: widget.firebaseUser),
                 ),
               );
             },
@@ -167,6 +172,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 MaterialPageRoute(
                   builder: (context) => MyRecipePage(
                     firebaseUser: widget.firebaseUser,
+                    appUser: widget.appUser,
                   ),
                 ),
               );

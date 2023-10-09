@@ -4,18 +4,18 @@ class Recipe {
   bool vegetarian;
   List<dynamic> ingredients, cuisines, diets, dishTypes, procedure;
   Recipe({
-    this.cookingMinutes,
-    this.cuisines,
-    this.diets,
-    this.dishTypes,
-    this.imageUrl,
-    this.ingredients,
-    this.likes,
-    this.preparationMinutes,
-    this.procedure,
-    this.servings,
-    this.summary,
-    this.title,
-    this.vegetarian,
+    required this.cookingMinutes,
+    required this.cuisines,
+    required this.diets,
+    required this.dishTypes,
+    required this.imageUrl,
+    required this.ingredients,
+    required this.likes,
+    required this.preparationMinutes,
+    required this.procedure,
+    required this.servings,
+    required this.summary,
+    required this.title,
+    required this.vegetarian,
   });
 }

@@ -1,48 +1,47 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:supervisory/helpers/classes/User.dart';
+import 'package:supervisory/helpers/classes/AppUser.dart';
 
 class UserService {
   getUser(String email) {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('users')
         .where('email', isEqualTo: email)
-        .getDocuments();
+        .get();
     // .snapshots()
     // .listen((QuerySnapshot snapshot) {});
   }
 
-  Stream<QuerySnapshot> getUserData(FirebaseUser user) {
-    return Firestore.instance
+  Future<QuerySnapshot> getUserData(User firebaseUser) async{
+    return await FirebaseFirestore.instance
         .collection('users')
-        .where('uid', isEqualTo: user.uid)
-        .snapshots();
+        .where('uid', isEqualTo: firebaseUser.uid).get();
   }
 
-  Future<void> addUser(FirebaseUser user) {
-    return Firestore.instance.collection("users").document().setData({
-      "uid": user.uid,
-      "name": user.displayName,
-      "email": user.email,
+  Future<void> addUser(User firebaseUser) {
+    return FirebaseFirestore.instance.collection("users").doc().set({
+      "uid": firebaseUser.uid,
+      "name": firebaseUser.displayName,
+      "email": firebaseUser.email,
       "liked": [],
       "joinDate": DateTime.now(),
-      "photo": user.photoUrl,
-      "phone": user.phoneNumber,
+      "photo": firebaseUser.photoURL,
+      "phone": firebaseUser.phoneNumber,
       "saved": [],
     });
   }
 
   Future<void> addLikedRecipe(String userDocId, List<dynamic> liked) {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("users")
-        .document(userDocId)
-        .updateData({"liked": liked});
+        .doc(userDocId)
+        .update({"liked": liked});
   }
 
   Future<void> addSavedRecipe(String userDocId, List<dynamic> saved) {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("users")
-        .document(userDocId)
-        .updateData({"saved": saved});
+        .doc(userDocId)
+        .update({"saved": saved});
   }
 }

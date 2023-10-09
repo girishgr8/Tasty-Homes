@@ -1,46 +1,69 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_walkthrough/walkthrough.dart';
-import 'package:flutter_walkthrough/flutter_walkthrough.dart';
+// import 'package:introduction_screen/introduction_screen.dart';
 import 'package:supervisory/screens/Dashboard.dart';
+import 'package:supervisory/screens/Profile.dart';
 
 class AppIntro extends StatelessWidget {
-  final FirebaseUser firebaseUser;
-  AppIntro({this.firebaseUser});
+  final User firebaseUser;
+  AppIntro({required this.firebaseUser});
 
-  final List<Walkthrough> list = [
-    Walkthrough(
-      title: 'New Recipes',
-      content:
-          'Add new recipes by publishing them and helping newbies to learn making them.',
-      imageIcon: Icons.add,
-      imagecolor: Colors.deepPurple,
-    ),
-    Walkthrough(
-      title: 'Search Recipes',
-      content: 'Search for recipes by their dish names.',
-      imageIcon: Icons.search,
-      imagecolor: Colors.deepPurple,
-    ),
-    Walkthrough(
-      title: 'Filter Recipes',
-      content:
-          'Search for recipes based on parameters like preparation time, published date, likes, read time.',
-      imageIcon: Icons.filter_list,
-      imagecolor: Colors.deepPurple,
-    ),
-    Walkthrough(
-      title: 'Lets\'s go !',
-      content: 'Start creating your recipes.',
-      imageIcon: Icons.arrow_forward,
-      imagecolor: Colors.deepPurple,
-    ),
-  ];
+  // final List<PageViewModel> walkThroughPages = [
+  //   PageViewModel(
+  //       title: 'New Recipes',
+  //       body:
+  //           'Add new recipes by publishing them and helping newbies to learn making them.',
+  //       image: const Center(
+  //         child: Icon(Icons.waving_hand, size: 50.0),
+  //       )
+  //       // imageIcon: Icons.add,
+  //       // imagecolor: Colors.deepPurple,
+  //       ),
+  //   PageViewModel(
+  //     title: 'Search Recipes',
+  //     body: 'Search for recipes by their dish names.',
+  //     image: const Center(
+  //       child: Icon(Icons.waving_hand, size: 50.0),
+  //     ),
+  //     // imageIcon: Icons.search,
+  //     // imagecolor: Colors.deepPurple,
+  //   ),
+  //   PageViewModel(
+  //     title: 'Filter Recipes',
+  //     body:
+  //         'Search for recipes based on parameters like preparation time, published date, likes, read time.',
+  //     image: const Center(
+  //       child: Icon(Icons.waving_hand, size: 50.0),
+  //     ),
+  //     // imageIcon: Icons.filter_list,
+  //     // imagecolor: Colors.deepPurple,
+  //   ),
+  //   PageViewModel(
+  //     title: 'Lets\'s go !',
+  //     body: 'Start creating your recipes.',
+  //     image: const Center(
+  //       child: Icon(Icons.waving_hand, size: 50.0),
+  //     ),
+  //     // imageIcon: Icons.arrow_forward,
+  //     // imagecolor: Colors.deepPurple,
+  //   ),
+  // ];
+
   @override
   Widget build(BuildContext context) {
-    return IntroScreen(
-        list,
-        MaterialPageRoute(
-            builder: (context) => Dashboard(firebaseUser: firebaseUser)));
+    // IntroductionScreen(
+    //   pages: walkThroughPages,
+    //   showSkipButton: true,
+    //   showNextButton: false,
+    //   skip: const Text("Skip"),
+    //   done: const Text("Done"),
+    //   onDone: () => {
+    //     Navigator.push(
+    //         context,
+    //         MaterialPageRoute(
+    //             builder: (context) => Dashboard(firebaseUser: firebaseUser)))
+    //   },
+    // );
+    return Dashboard(appUser: null, firebaseUser: firebaseUser);
   }
 }
